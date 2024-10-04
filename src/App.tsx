@@ -1,4 +1,3 @@
-// App.tsx
 import React, { useState } from "react";
 import ImageGallery from "./components/ImageGallery";
 import ImageCanvas from "./components/ImageCanvas";
@@ -20,8 +19,8 @@ const App: React.FC = () => {
       />
       <ImageCanvas
         images={images}
-        isGalleryVisible={isGalleryVisible} // Pass isGalleryVisible
-        setIsGalleryVisible={setIsGalleryVisible} // Pass setIsGalleryVisible
+        isGalleryVisible={isGalleryVisible}
+        setIsGalleryVisible={setIsGalleryVisible}
       />
     </div>
   );
