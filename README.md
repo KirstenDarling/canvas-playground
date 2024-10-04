@@ -54,3 +54,15 @@ npm install
 ```bash
 npm run start
 ```
+
+## Contributing
+
+Contributions are welcome! If you find any bugs or have suggestions for new features, please open an issue or submit a pull request.
+
+## Authors
+
+Kirsten Darling - Initial work - [KirstenDarling](https://www.github.com/KirstenDarling)
+
+## License
+
+This project is licensed under the GPL-3.0 GNU GENERAL PUBLIC LICENSE License - see the [LICENSE.md](/LICENSE.md) file for details.
