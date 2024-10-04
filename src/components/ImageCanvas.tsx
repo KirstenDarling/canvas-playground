@@ -1,17 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import * as fabric from "fabric";
-import {
-  BsCrop,
-  BsArrowsFullscreen,
-  BsImage,
-  BsChevronDoubleUp,
-  BsChevronDoubleDown,
-} from "react-icons/bs";
+import { BsCrop, BsArrowsFullscreen, BsImage } from "react-icons/bs";
 
 interface ImageCanvasProps {
   images: string[];
-  isGalleryVisible: boolean; // Add isGalleryVisible prop
-  setIsGalleryVisible: React.Dispatch<React.SetStateAction<boolean>>; // Add setIsGalleryVisible prop
+  isGalleryVisible: boolean;
+  setIsGalleryVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ImageCanvas: React.FC<ImageCanvasProps> = ({
