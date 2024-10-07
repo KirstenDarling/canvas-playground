@@ -146,8 +146,8 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
       };
 
       const cropData = {
-        x: cropRect.left! - selectedImage.left!,
-        y: cropRect.top! - selectedImage.top!,
+        x: (cropRect.left! - selectedImage.left!) / selectedImage.scaleX!,
+        y: (cropRect.top! - selectedImage.top!) / selectedImage.scaleY!,
         width: cropRect.width!,
         height: cropRect.height!,
       };
@@ -214,7 +214,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
         <button
           onClick={startCropping}
           disabled={!selectedImage || isCropping}
-          className="relative p-2 group" // Added group class
+          className="relative p-2 group"
         >
           <BsCrop size={20} />
           <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
@@ -226,7 +226,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
         <button
           onClick={cropImage}
           disabled={!cropRect}
-          className="relative p-2 group" // Added group class
+          className="relative p-2 group"
         >
           <BsArrowsFullscreen size={20} />
           <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
@@ -238,7 +238,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
         <button
           onClick={flipImageHorizontal}
           disabled={!selectedImage}
-          className="relative p-2 group" // Added group class
+          className="relative p-2 group"
         >
           <BsImage size={20} className="transform rotate-y-180" />
           <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
@@ -250,7 +250,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
         <button
           onClick={flipImageVertical}
           disabled={!selectedImage}
-          className="relative p-2 group" // Added group class
+          className="relative p-2 group"
         >
           <BsImage size={20} className="transform rotate-x-180" />
           <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
