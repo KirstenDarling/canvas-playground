@@ -102,22 +102,22 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
     if (selectedImage instanceof fabric.Image && !isCropping) {
       setIsCropping(true);
 
-      const image = selectedImage;
-      const rect = new fabric.Rect({
-        left: image.left,
-        top: image.top,
-        width: image.width! * image.scaleX!,
-        height: image.height! * image.scaleY!,
-        fill: "rgba(0,0,0,0.3)",
+      const croppedObject = new fabric.Rect({
+        left: selectedImage.left,
+        top: selectedImage.top,
+        width: selectedImage.width * selectedImage.scaleX,
+        height: selectedImage.height * selectedImage.scaleY,
+        fill: "rgba(0,0,0,0.3)", // You can adjust the fill color
+        strokeDashArray: [5, 5], // Add a dashed border
         stroke: "blue",
         strokeWidth: 2,
         hasRotatingPoint: false,
         cornerSize: 10,
         transparentCorners: false,
       });
-      setCropRect(rect);
-      canvasInstanceRef.current!.add(rect);
-      canvasInstanceRef.current!.setActiveObject(rect);
+      setCropRect(croppedObject);
+      canvasInstanceRef.current!.add(croppedObject);
+      canvasInstanceRef.current!.setActiveObject(croppedObject);
     }
   }, [selectedImage, isCropping]);
 
@@ -127,48 +127,22 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
       cropRect &&
       canvasInstanceRef.current
     ) {
-      const canvasInstance = canvasInstanceRef.current;
-      const croppedImage = new Image();
-
-      croppedImage.onload = () => {
-        const img = new fabric.Image(croppedImage);
-        img.set({
-          left: cropRect.left,
-          top: cropRect.top,
-        });
-        canvasInstance.remove(selectedImage);
-        canvasInstance.remove(cropRect);
-        canvasInstance.add(img);
-        canvasInstance.setActiveObject(img);
-        canvasInstance.renderAll();
-        setIsCropping(false);
+      const { top, left, width, height } = cropRect.getBoundingRect();
+      const croppedImageDataURL = canvasInstanceRef.current.toDataURL({
+        left: left,
+        top: top,
+        width: width,
+        height: height,
+        multiplier: 1,
+      });
+      fabric.Image.fromURL(croppedImageDataURL).then((croppedImg) => {
+        canvasInstanceRef.current!.remove(selectedImage);
+        canvasInstanceRef.current!.remove(cropRect);
         setCropRect(null);
-      };
-
-      const cropData = {
-        x: (cropRect.left! - selectedImage.left!) / selectedImage.scaleX!,
-        y: (cropRect.top! - selectedImage.top!) / selectedImage.scaleY!,
-        width: cropRect.width!,
-        height: cropRect.height!,
-      };
-
-      const imageElement: any = selectedImage.getElement();
-      const canvas = document.createElement("canvas");
-      canvas.width = cropData.width;
-      canvas.height = cropData.height;
-      const ctx = canvas.getContext("2d");
-      ctx!.drawImage(
-        imageElement,
-        cropData.x,
-        cropData.y,
-        cropData.width,
-        cropData.height,
-        0,
-        0,
-        cropData.width,
-        cropData.height
-      );
-      croppedImage.src = canvas.toDataURL();
+        setIsCropping(false);
+        canvasInstanceRef.current!.add(croppedImg);
+        canvasInstanceRef.current!.renderAll();
+      });
     }
   }, [selectedImage, cropRect]);
 
