@@ -13,6 +13,8 @@ interface ImageCanvasProps {
   setIsGalleryVisible: React.Dispatch<React.SetStateAction<boolean>>;
   setIsPhotoBookModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isPhotoBookModalOpen: boolean;
+  photoBookOptions: { pages: number; size: string };
+  onCreatePhotoBook: () => void;
 }
 
 const ImageCanvas: React.FC<ImageCanvasProps> = ({
@@ -21,6 +23,8 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
   setIsGalleryVisible,
   isPhotoBookModalOpen,
   setIsPhotoBookModalOpen,
+  photoBookOptions,
+  onCreatePhotoBook,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [selectedImage, setSelectedImage] = useState<fabric.Object | null>(
@@ -29,6 +33,37 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
   const canvasInstanceRef = useRef<fabric.Canvas | null>(null);
   const [isCropping, setIsCropping] = useState(false);
   const [cropRect, setCropRect] = useState<fabric.Rect | null>(null);
+
+  const createPhotoBookPages = useCallback(() => {
+    if (canvasInstanceRef.current) {
+      const canvas = canvasInstanceRef.current;
+      canvas.clear(); // Clear existing content
+
+      const pageWidth = photoBookOptions.size === "8x11" ? 800 : 1100; // Adjust as needed
+      const pageHeight = photoBookOptions.size === "8x11" ? 1100 : 1400; // Adjust as needed
+
+      for (let i = 0; i < photoBookOptions.pages; i++) {
+        const rect = new fabric.Rect({
+          left: i * 100, // Adjust spacing as needed
+          top: 50, // Adjust spacing as needed
+          width: pageWidth,
+          height: pageHeight,
+          stroke: "black",
+          strokeWidth: 2,
+          fill: "white",
+        });
+        canvas.add(rect);
+      }
+      canvas.renderAll();
+    }
+  }, [photoBookOptions]);
+
+  useEffect(() => {
+    if (!isPhotoBookModalOpen) {
+      // Modal has been closed
+      createPhotoBookPages();
+    }
+  }, [isPhotoBookModalOpen, createPhotoBookPages]);
 
   useEffect(() => {
     const canvas = new fabric.Canvas(canvasRef.current!, {
