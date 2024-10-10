@@ -50,6 +50,7 @@ const PhotoBookModal: React.FC<PhotoBookModalProps> = ({
             onChange={onChange}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           >
+            <option value="4x6">4x6</option>
             <option value="8x11">8x11</option>
             <option value="11x14">11x14</option>
             <option value="12x12">12x12</option>

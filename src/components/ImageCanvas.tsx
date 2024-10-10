@@ -34,29 +34,65 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
   const [isCropping, setIsCropping] = useState(false);
   const [cropRect, setCropRect] = useState<fabric.Rect | null>(null);
 
+  const [currentPage, setCurrentPage] = useState(1);
+
   const createPhotoBookPages = useCallback(() => {
     if (canvasInstanceRef.current) {
       const canvas = canvasInstanceRef.current;
       canvas.clear(); // Clear existing content
 
-      const pageWidth = photoBookOptions.size === "8x11" ? 800 : 1100; // Adjust as needed
-      const pageHeight = photoBookOptions.size === "8x11" ? 1100 : 1400; // Adjust as needed
+      const pageWidth = photoBookOptions.size === "4x6" ? 600 : 400;
+      const pageHeight = photoBookOptions.size === "4x6" ? 400 : 600;
 
-      for (let i = 0; i < photoBookOptions.pages; i++) {
-        const rect = new fabric.Rect({
-          left: i * 100, // Adjust spacing as needed
-          top: 50, // Adjust spacing as needed
-          width: pageWidth,
-          height: pageHeight,
-          stroke: "black",
-          strokeWidth: 2,
-          fill: "white",
-        });
-        canvas.add(rect);
+      // Calculate total pages and pages per spread
+      const totalPages = photoBookOptions.pages;
+      const pagesPerSpread = 2;
+      const numSpreads = Math.ceil(totalPages / pagesPerSpread);
+
+      // Calculate canvas width based on total pages and page size
+      const canvasWidth = numSpreads * (pageWidth * pagesPerSpread + 50); // Adjust spacing as needed
+      canvas.setWidth(canvasWidth);
+
+      for (let i = 0; i < numSpreads; i++) {
+        for (let j = 0; j < pagesPerSpread; j++) {
+          const pageIndex = i * pagesPerSpread + j;
+          if (pageIndex < totalPages) {
+            const rect = new fabric.Rect({
+              left: i * (pageWidth * pagesPerSpread + 50) + j * pageWidth, // Position pages in spreads
+              top: 50, // Adjust spacing as needed
+              width: pageWidth,
+              height: pageHeight,
+              stroke: "black",
+              strokeWidth: 2,
+              fill: "white",
+            });
+            canvas.add(rect);
+          }
+        }
       }
       canvas.renderAll();
     }
   }, [photoBookOptions]);
+
+  // Function to handle page navigation
+  const handlePageChange = (newPage: number) => {
+    if (newPage > 0 && newPage <= Math.ceil(photoBookOptions.pages / 2)) {
+      setCurrentPage(newPage);
+    }
+  };
+
+  useEffect(() => {
+    // Update canvas viewport when currentPage changes
+    if (canvasInstanceRef.current) {
+      const canvas = canvasInstanceRef.current;
+      const pageWidth = photoBookOptions.size === "4x6" ? 600 : 400;
+      const xOffset = (currentPage - 1) * 2 * (pageWidth + 50); // Adjust spacing as needed
+
+      // Use fabric.Point instead of a plain object
+      const newPan = new fabric.Point(xOffset, 0);
+      canvas.absolutePan(newPan);
+    }
+  }, [currentPage, photoBookOptions]);
 
   useEffect(() => {
     if (!isPhotoBookModalOpen) {
@@ -78,14 +114,47 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
       e.preventDefault();
       const { offsetX, offsetY } = e;
       const imageUrl = e.dataTransfer!.getData("imageUrl");
+
       fabric.Image.fromURL(imageUrl, {}).then((img) => {
-        img.set({
-          left: offsetX,
-          top: offsetY,
-          scaleX: 0.5,
-          scaleY: 0.5,
-          selectable: true,
-        });
+        // Find the page where the image was dropped (if any)
+        const page = canvas.getObjects().find((obj) => {
+          if (obj instanceof fabric.Rect) {
+            const { left, top, width, height } = obj;
+            return (
+              offsetX >= left &&
+              offsetX <= left + width &&
+              offsetY >= top &&
+              offsetY <= top + height
+            );
+          }
+          return false;
+        }) as fabric.Rect | undefined;
+
+        if (page) {
+          // Calculate scale to fit the image inside the page
+          const scale = Math.min(
+            page.width! / img.width!,
+            page.height! / img.height!
+          );
+
+          img.set({
+            left: page.left! + (page.width! - img.width! * scale) / 2,
+            top: page.top! + (page.height! - img.height! * scale) / 2,
+            scaleX: scale,
+            scaleY: scale,
+            selectable: true,
+          });
+        } else {
+          // Normal drop behavior if not dropped on a page
+          img.set({
+            left: offsetX,
+            top: offsetY,
+            scaleX: 0.5,
+            scaleY: 0.5,
+            selectable: true,
+          });
+        }
+
         canvas.add(img);
         canvas.renderAll();
       });
@@ -284,6 +353,25 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
         </button>
       </div>
       <canvas ref={canvasRef} className="border border-gray-500 w-full" />
+      {/* Pagination Controls */}
+
+      <div className="flex justify-center mt-4">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="bg-gray-300  
+ hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l"
+        >
+          Prev
+        </button>
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === Math.ceil(photoBookOptions.pages / 2)}
+          className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r"
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };
