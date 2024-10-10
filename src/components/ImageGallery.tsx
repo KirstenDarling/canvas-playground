@@ -8,13 +8,13 @@ interface ImageGalleryProps {
 }
 
 export default function ImageGallery(props: ImageGalleryProps) {
-  const [images, setImages] = useState(props.images);
+  const [images, setImages] = useState(props.images); // Initialize with props.images
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleDrop = useCallback(
     (acceptedFiles: File[]) => {
       const newImages = acceptedFiles.map((file) => URL.createObjectURL(file));
-      setImages((prevImages) => [...prevImages, ...newImages]);
+      setImages((prevImages) => [...prevImages, ...newImages]); // Append new images
       props.onDrop(acceptedFiles);
       setIsModalOpen(false);
     },

@@ -183,7 +183,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
       canvasContainer!.removeEventListener("dragover", handleDragOver);
       canvas.dispose();
     };
-  }, [images]);
+  }, []);
 
   const deleteSelectedImage = useCallback(() => {
     if (selectedImage && canvasInstanceRef.current) {
