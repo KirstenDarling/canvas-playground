@@ -39,27 +39,30 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
   const createPhotoBookPages = useCallback(() => {
     if (canvasInstanceRef.current) {
       const canvas = canvasInstanceRef.current;
-      canvas.clear(); // Clear existing content
+      canvas.clear();
 
-      const pageWidth = photoBookOptions.size === "4x6" ? 600 : 400;
-      const pageHeight = photoBookOptions.size === "4x6" ? 400 : 600;
+      const pageWidth = photoBookOptions.size === "4x6" ? 400 : 400;
+      const pageHeight = photoBookOptions.size === "4x6" ? 600 : 600;
 
-      // Calculate total pages and pages per spread
-      const totalPages = photoBookOptions.pages;
       const pagesPerSpread = 2;
-      const numSpreads = Math.ceil(totalPages / pagesPerSpread);
+      const numPages = photoBookOptions.pages;
 
-      // Calculate canvas width based on total pages and page size
-      const canvasWidth = numSpreads * (pageWidth * pagesPerSpread + 50); // Adjust spacing as needed
-      canvas.setWidth(canvasWidth);
+      // Calculate spread width including padding between spreads
+      const canvasWidth = 1200; // You provided this
+      const padding = (canvasWidth - pageWidth * pagesPerSpread) / 3; // Calculate padding for equal spacing
+      const spreadWidth = pageWidth * pagesPerSpread + padding;
+      const numSpreads = Math.ceil(numPages / pagesPerSpread);
 
       for (let i = 0; i < numSpreads; i++) {
+        // Calculate left offset to center EACH spread
+        const initialOffset = i * spreadWidth + padding;
+
         for (let j = 0; j < pagesPerSpread; j++) {
           const pageIndex = i * pagesPerSpread + j;
-          if (pageIndex < totalPages) {
+          if (pageIndex < numPages) {
             const rect = new fabric.Rect({
-              left: i * (pageWidth * pagesPerSpread + 50) + j * pageWidth, // Position pages in spreads
-              top: 50, // Adjust spacing as needed
+              left: initialOffset + j * pageWidth,
+              top: 50,
               width: pageWidth,
               height: pageHeight,
               stroke: "black",
@@ -67,17 +70,39 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
               fill: "white",
             });
             canvas.add(rect);
+
+            // Add page number
+            const pageNumber = new fabric.IText((pageIndex + 1).toString(), {
+              left: rect.left! + pageWidth / 2,
+              top: rect.top! + pageHeight + 10,
+              fontSize: 16,
+              fontFamily: "Arial",
+              textAlign: "center",
+              originX: "center",
+            });
+            canvas.add(pageNumber);
           }
         }
       }
       canvas.renderAll();
     }
-  }, [photoBookOptions]);
+  }, [photoBookOptions, canvasInstanceRef]);
 
-  // Function to handle page navigation
   const handlePageChange = (newPage: number) => {
     if (newPage > 0 && newPage <= Math.ceil(photoBookOptions.pages / 2)) {
       setCurrentPage(newPage);
+
+      if (canvasInstanceRef.current) {
+        const pageWidth = photoBookOptions.size === "4x6" ? 400 : 400;
+        const canvasWidth = 1200; // Or get the canvas width dynamically
+        const padding = (canvasWidth - pageWidth * 2) / 3;
+        const spreadWidth = pageWidth * 2 + padding;
+
+        // Calculate xOffset for precise spread positioning
+        const xOffset = (newPage - 1) * spreadWidth + padding;
+
+        canvasInstanceRef.current.absolutePan(new fabric.Point(xOffset, 0));
+      }
     }
   };
 
