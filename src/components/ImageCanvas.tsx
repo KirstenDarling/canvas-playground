@@ -43,19 +43,40 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
 
       const pageWidth = photoBookOptions.size === "4x6" ? 400 : 400;
       const pageHeight = photoBookOptions.size === "4x6" ? 600 : 600;
+      const spineWidth = 50;
 
       const pagesPerSpread = 2;
       const numPages = photoBookOptions.pages;
 
-      // Calculate spread width including padding between spreads
-      const canvasWidth = 1200; // You provided this
-      const padding = (canvasWidth - pageWidth * pagesPerSpread) / 3; // Calculate padding for equal spacing
-      const spreadWidth = pageWidth * pagesPerSpread + padding;
+      const canvasWidth = 1200;
+      const padding =
+        (canvasWidth - pageWidth * pagesPerSpread - spineWidth) / 3;
+      const spreadWidth = pageWidth * pagesPerSpread + padding + spineWidth;
       const numSpreads = Math.ceil(numPages / pagesPerSpread);
 
+      const spine = new fabric.Rect({
+        left: padding,
+        top: 50,
+        width: spineWidth,
+        height: pageHeight,
+        stroke: "black",
+        strokeWidth: 2,
+        fill: "white",
+      });
+      canvas.add(spine);
+
+      const spineText = new fabric.IText("Spine", {
+        left: spine.left! + spineWidth / 2,
+        top: spine.top! + pageHeight + 10,
+        fontSize: 16,
+        fontFamily: "Arial",
+        textAlign: "center",
+        originX: "center",
+      });
+      canvas.add(spineText);
+
       for (let i = 0; i < numSpreads; i++) {
-        // Calculate left offset to center EACH spread
-        const initialOffset = i * spreadWidth + padding;
+        const initialOffset = i * spreadWidth + padding + spineWidth + padding;
 
         for (let j = 0; j < pagesPerSpread; j++) {
           const pageIndex = i * pagesPerSpread + j;
@@ -71,7 +92,6 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
             });
             canvas.add(rect);
 
-            // Add page number
             const pageNumber = new fabric.IText((pageIndex + 1).toString(), {
               left: rect.left! + pageWidth / 2,
               top: rect.top! + pageHeight + 10,
@@ -94,12 +114,13 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
 
       if (canvasInstanceRef.current) {
         const pageWidth = photoBookOptions.size === "4x6" ? 400 : 400;
-        const canvasWidth = 1200; // Or get the canvas width dynamically
-        const padding = (canvasWidth - pageWidth * 2) / 3;
-        const spreadWidth = pageWidth * 2 + padding;
+        const spineWidth = 50;
+        const canvasWidth = 1200;
+        const padding = (canvasWidth - pageWidth * 2 - spineWidth) / 3;
+        const spreadWidth = pageWidth * 2 + padding + spineWidth + padding;
 
-        // Calculate xOffset for precise spread positioning
-        const xOffset = (newPage - 1) * spreadWidth + padding;
+        const xOffset =
+          (newPage - 1) * spreadWidth + padding + spineWidth + padding;
 
         canvasInstanceRef.current.absolutePan(new fabric.Point(xOffset, 0));
       }
@@ -107,13 +128,11 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
   };
 
   useEffect(() => {
-    // Update canvas viewport when currentPage changes
     if (canvasInstanceRef.current) {
       const canvas = canvasInstanceRef.current;
       const pageWidth = photoBookOptions.size === "4x6" ? 600 : 400;
-      const xOffset = (currentPage - 1) * 2 * (pageWidth + 50); // Adjust spacing as needed
+      const xOffset = (currentPage - 1) * 2 * (pageWidth + 50);
 
-      // Use fabric.Point instead of a plain object
       const newPan = new fabric.Point(xOffset, 0);
       canvas.absolutePan(newPan);
     }
@@ -121,7 +140,6 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
 
   useEffect(() => {
     if (!isPhotoBookModalOpen) {
-      // Modal has been closed
       createPhotoBookPages();
     }
   }, [isPhotoBookModalOpen, createPhotoBookPages]);
@@ -141,7 +159,6 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
       const imageUrl = e.dataTransfer!.getData("imageUrl");
 
       fabric.Image.fromURL(imageUrl, {}).then((img) => {
-        // Find the page where the image was dropped (if any)
         const page = canvas.getObjects().find((obj) => {
           if (obj instanceof fabric.Rect) {
             const { left, top, width, height } = obj;
@@ -156,7 +173,6 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
         }) as fabric.Rect | undefined;
 
         if (page) {
-          // Calculate scale to fit the image inside the page
           const scale = Math.min(
             page.width! / img.width!,
             page.height! / img.height!
@@ -170,7 +186,6 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
             selectable: true,
           });
         } else {
-          // Normal drop behavior if not dropped on a page
           img.set({
             left: offsetX,
             top: offsetY,
@@ -245,8 +260,8 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
         top: selectedImage.top,
         width: selectedImage.width * selectedImage.scaleX,
         height: selectedImage.height * selectedImage.scaleY,
-        fill: "rgba(0,0,0,0.3)", // You can adjust the fill color
-        strokeDashArray: [5, 5], // Add a dashed border
+        fill: "rgba(0,0,0,0.3)",
+        strokeDashArray: [5, 5],
         stroke: "blue",
         strokeWidth: 2,
         hasRotatingPoint: false,
@@ -304,8 +319,8 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
         canvasInstanceRef.current!.setWidth(canvasRef.current.offsetWidth);
       }
     };
-    updateCanvasWidth(); // Set initial width
-    window.addEventListener("resize", updateCanvasWidth); // Update on resize
+    updateCanvasWidth();
+    window.addEventListener("resize", updateCanvasWidth);
     return () => window.removeEventListener("resize", updateCanvasWidth);
   }, []);
 
@@ -368,7 +383,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
         </button>
         {/* Make Photo Book Button with Tooltip */}
         <button
-          onClick={() => setIsPhotoBookModalOpen(!isPhotoBookModalOpen)} // Assuming you pass this function as a prop
+          onClick={() => setIsPhotoBookModalOpen(!isPhotoBookModalOpen)}
           className="relative p-2 group"
         >
           <BsBookHalf size={20} />

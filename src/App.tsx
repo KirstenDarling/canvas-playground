@@ -1,16 +1,15 @@
-// App.tsx
 import React, { useState } from "react";
 import ImageGallery from "./components/ImageGallery";
 import ImageCanvas from "./components/ImageCanvas";
-import PhotoBookModal from "./components/PhotoBookModal"; // Import the new component
+import PhotoBookModal from "./components/PhotoBookModal";
 
 const App: React.FC = () => {
   const [images, setImages] = useState<any[]>([]);
   const [isGalleryVisible, setIsGalleryVisible] = useState(true);
   const [isPhotoBookModalOpen, setIsPhotoBookModalOpen] = useState(false);
   const [photoBookOptions, setPhotoBookOptions] = useState({
-    pages: 10, // Default number of pages
-    size: "8x11", // Default size
+    pages: 10,
+    size: "8x11",
   });
 
   const handleDrop = (newImages: any) => {
