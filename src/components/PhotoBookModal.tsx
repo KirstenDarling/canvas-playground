@@ -1,4 +1,3 @@
-// PhotoBookModal.tsx
 import React from "react";
 
 interface PhotoBookModalProps {

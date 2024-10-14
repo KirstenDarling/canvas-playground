@@ -6,6 +6,7 @@ import {
   BsImage,
   BsBookHalf,
 } from "react-icons/bs";
+import { BiText } from "react-icons/bi";
 
 interface ImageCanvasProps {
   images: string[];
@@ -324,6 +325,52 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
     return () => window.removeEventListener("resize", updateCanvasWidth);
   }, []);
 
+  const [isAddingText, setIsAddingText] = useState(false);
+
+  const addTextToSpine = useCallback(() => {
+    if (canvasInstanceRef.current) {
+      const canvas = canvasInstanceRef.current;
+
+      const spine = canvas.getObjects().find((obj) => {
+        return obj instanceof fabric.Rect && obj.width === 50;
+      }) as fabric.Rect | undefined;
+
+      if (spine) {
+        setIsAddingText(true);
+
+        const text = new fabric.IText("Spine Text", {
+          left: spine.left! + spine.width! / 2,
+          top: spine.top! + 20,
+          fontSize: 20,
+          fontFamily: "Arial",
+          fill: "black",
+          angle: 90,
+          originX: "center",
+          hasRotatingPoint: false,
+        });
+        canvas.add(text);
+        canvas.setActiveObject(text);
+        canvas.renderAll();
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isAddingText) {
+      const canvas = canvasInstanceRef.current!;
+
+      const handleTextEntry = (e: KeyboardEvent) => {
+        if (e.key === "Enter") {
+          canvas.discardActiveObject();
+          setIsAddingText(false);
+        }
+      };
+
+      window.addEventListener("keydown", handleTextEntry);
+      return () => window.removeEventListener("keydown", handleTextEntry);
+    }
+  }, [isAddingText]);
+
   return (
     <div className="relative">
       <div className="flex gap-2 mb-4">
@@ -389,6 +436,17 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
           <BsBookHalf size={20} />
           <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
             Make Photo Book
+          </span>
+        </button>
+        {/* Add Text Button with Tooltip */}
+        <button
+          onClick={addTextToSpine}
+          disabled={isAddingText}
+          className="relative p-2 group"
+        >
+          <BiText size={20} />
+          <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
+            Add Text
           </span>
         </button>
       </div>
