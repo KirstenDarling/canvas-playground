@@ -9,7 +9,7 @@ const App: React.FC = () => {
   const [isPhotoBookModalOpen, setIsPhotoBookModalOpen] = useState(false);
   const [photoBookOptions, setPhotoBookOptions] = useState({
     pages: 10,
-    size: "8x11",
+    size: "4x6",
   });
 
   const handleDrop = (newImages: any) => {
