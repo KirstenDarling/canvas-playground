@@ -16,7 +16,11 @@ const Profile = () => {
     <div>
       {user && (
         <div className="flex">
-          <img src={user.picture} alt={user.name} className="rounded-full" />
+          <img
+            src={user.picture}
+            alt={user.name}
+            className="rounded-[50%] h-[100px] w-[100px]"
+          />
           <div className="flex flex-col ml-3 pt-[7%]">
             <h2>{user.name}</h2>
             <p>{user.email}</p>
