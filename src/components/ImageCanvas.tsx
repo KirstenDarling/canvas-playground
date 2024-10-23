@@ -371,6 +371,28 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
     }
   }, [isAddingText]);
 
+  const [hasImage, setHasImage] = useState(false); // State to track if an image is on the canvas
+
+  useEffect(() => {
+    const canvas = canvasInstanceRef.current;
+
+    const updateHasImage = () => {
+      setHasImage(
+        canvas!.getObjects().some((obj) => obj instanceof fabric.Image)
+      );
+    };
+
+    if (canvas) {
+      canvas.on("object:added", updateHasImage);
+      canvas.on("object:removed", updateHasImage);
+
+      return () => {
+        canvas.off("object:added", updateHasImage);
+        canvas.off("object:removed", updateHasImage);
+      };
+    }
+  }, []);
+
   return (
     <div className="relative">
       <div className="flex gap-2 mb-4">
@@ -384,11 +406,26 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
             {isGalleryVisible ? "Hide Gallery" : "Show Gallery"}
           </span>
         </button>
+        {/* Make Photo Book Button with Tooltip */}
+        <button
+          onClick={() => setIsPhotoBookModalOpen(!isPhotoBookModalOpen)}
+          className="relative p-2 group"
+        >
+          <BsBookHalf size={20} />
+          <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
+            Make Photo Book
+          </span>
+        </button>
         {/* Crop Button with Tooltip */}
         <button
           onClick={startCropping}
-          disabled={!selectedImage || isCropping}
-          className="relative p-2 group"
+          disabled={!selectedImage || isCropping || !hasImage}
+          className={`relative p-2 group 
+            ${
+              !selectedImage || isCropping || !hasImage
+                ? "opacity-50 cursor-not-allowed"
+                : ""
+            }`}
         >
           <BsCrop size={20} />
           <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
@@ -398,8 +435,9 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
         {/* Finalize Crop Button with Tooltip */}
         <button
           onClick={cropImage}
-          disabled={!cropRect}
-          className="relative p-2 group"
+          disabled={!cropRect || !hasImage}
+          className={`relative p-2 group 
+            ${!cropRect || !hasImage ? "opacity-50 cursor-not-allowed" : ""}`}
         >
           <BsArrowsFullscreen size={20} />
           <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
@@ -409,8 +447,11 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
         {/* Flip Horizontal Button with Tooltip */}
         <button
           onClick={flipImageHorizontal}
-          disabled={!selectedImage}
-          className="relative p-2 group"
+          disabled={!selectedImage || !hasImage}
+          className={`relative p-2 group 
+            ${
+              !selectedImage || !hasImage ? "opacity-50 cursor-not-allowed" : ""
+            }`}
         >
           <BsImage size={20} className="transform rotate-y-180" />
           <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
@@ -420,22 +461,15 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
         {/* Flip Vertical Button with Tooltip */}
         <button
           onClick={flipImageVertical}
-          disabled={!selectedImage}
-          className="relative p-2 group"
+          disabled={!selectedImage || !hasImage}
+          className={`relative p-2 group
+            ${
+              !selectedImage || !hasImage ? "opacity-50 cursor-not-allowed" : ""
+            }`}
         >
           <BsImage size={20} className="transform rotate-x-180" />
           <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
             Flip Vertical
-          </span>
-        </button>
-        {/* Make Photo Book Button with Tooltip */}
-        <button
-          onClick={() => setIsPhotoBookModalOpen(!isPhotoBookModalOpen)}
-          className="relative p-2 group"
-        >
-          <BsBookHalf size={20} />
-          <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
-            Make Photo Book
           </span>
         </button>
         {/* Add Text Button with Tooltip */}
