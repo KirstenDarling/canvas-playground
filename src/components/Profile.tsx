@@ -15,15 +15,17 @@ const Profile = () => {
   return (
     <div>
       {user && (
-        <div className="flex">
-          <img
-            src={user.picture}
-            alt={user.name}
-            className="rounded-[50%] h-[100px] w-[100px]"
-          />
-          <div className="flex flex-col ml-3 pt-[7%]">
-            <h2>{user.name}</h2>
-            <p>{user.email}</p>
+        <div className="bg-gray-100 p-4 rounded-lg shadow-md">
+          <div className="flex">
+            <img
+              src={user.picture}
+              alt={user.name}
+              className="rounded-full h-20 w-20"
+            />
+            <div className="flex flex-col ml-4">
+              <h2 className="text-xl font-semibold">{user.name}</h2>
+              <p className="text-gray-600">{user.email}</p>
+            </div>
           </div>
         </div>
       )}
