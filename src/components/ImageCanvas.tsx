@@ -371,7 +371,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
     }
   }, [isAddingText]);
 
-  const [hasImage, setHasImage] = useState(false); // State to track if an image is on the canvas
+  const [hasImage, setHasImage] = useState(false);
 
   useEffect(() => {
     const canvas = canvasInstanceRef.current;
@@ -389,6 +389,27 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
       return () => {
         canvas.off("object:added", updateHasImage);
         canvas.off("object:removed", updateHasImage);
+      };
+    }
+  }, []);
+
+  const [hasPhotoBook, setHasPhotoBook] = useState(false);
+
+  useEffect(() => {
+    const updateHasPhotoBook = () => {
+      const canvas = canvasInstanceRef.current;
+      setHasPhotoBook(
+        canvas!.getObjects().some((obj) => obj instanceof fabric.Rect)
+      );
+    };
+
+    if (canvasInstanceRef.current) {
+      canvasInstanceRef.current.on("object:added", updateHasPhotoBook);
+      canvasInstanceRef.current.on("object:removed", updateHasPhotoBook);
+
+      return () => {
+        canvasInstanceRef.current!.off("object:added", updateHasPhotoBook);
+        canvasInstanceRef.current!.off("object:removed", updateHasPhotoBook);
       };
     }
   }, []);
@@ -475,8 +496,13 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
         {/* Add Text Button with Tooltip */}
         <button
           onClick={addTextToSpine}
-          disabled={isAddingText}
-          className="relative p-2 group"
+          disabled={isAddingText || !hasPhotoBook}
+          className={`relative p-2 group 
+            ${
+              isAddingText || !hasPhotoBook
+                ? "opacity-50 cursor-not-allowed"
+                : ""
+            }`}
         >
           <BiText size={20} />
           <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
