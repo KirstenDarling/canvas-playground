@@ -7,6 +7,7 @@ import {
   BsBookHalf,
 } from "react-icons/bs";
 import { BiText } from "react-icons/bi";
+import { FaImage } from "react-icons/fa";
 
 interface ImageCanvasProps {
   images: string[];
@@ -16,6 +17,10 @@ interface ImageCanvasProps {
   isPhotoBookModalOpen: boolean;
   photoBookOptions: { pages: number; size: string };
   onCreatePhotoBook: () => void;
+  setIsPhotoPrintModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isPhotoPrintModalOpen: boolean;
+  photoPrintOptions: { pages: number; size: string };
+  onCreatePhotoPrint: () => void;
 }
 
 const ImageCanvas: React.FC<ImageCanvasProps> = ({
@@ -26,6 +31,10 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
   setIsPhotoBookModalOpen,
   photoBookOptions,
   onCreatePhotoBook,
+  isPhotoPrintModalOpen,
+  setIsPhotoPrintModalOpen,
+  photoPrintOptions,
+  onCreatePhotoPrint,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [selectedImage, setSelectedImage] = useState<fabric.Object | null>(
@@ -425,6 +434,16 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
           {isGalleryVisible ? "Hide Image Gallery" : "Show Image Gallery"}
           <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
             {isGalleryVisible ? "Hide Gallery" : "Show Gallery"}
+          </span>
+        </button>
+        {/* Make Photo Print Button with Tooltip */}
+        <button
+          onClick={() => setIsPhotoPrintModalOpen(!isPhotoPrintModalOpen)}
+          className="relative p-2 group"
+        >
+          <FaImage size={20} />
+          <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
+            Make Single Photo Print
           </span>
         </button>
         {/* Make Photo Book Button with Tooltip */}
