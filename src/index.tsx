@@ -14,7 +14,7 @@ root.render(
     clientId="EDNw16nunBDPe0yuKg9ZuaSSw1iOYef9"
     authorizationParams={{
       // redirect_uri: window.location.origin,
-      redirect_uri: "http://localhost:3000/canvas",
+      redirect_uri: "https://canvas-playground-pi.vercel.app/canvas",
     }}
   >
     <React.StrictMode>
