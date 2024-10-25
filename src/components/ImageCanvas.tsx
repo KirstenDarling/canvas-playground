@@ -17,6 +17,10 @@ interface ImageCanvasProps {
   isPhotoBookModalOpen: boolean;
   photoBookOptions: { pages: number; size: string };
   onCreatePhotoBook: () => void;
+  setIsPhotoPrintModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isPhotoPrintModalOpen: boolean;
+  photoPrintOptions: { pages: number; size: string };
+  onCreatePhotoPrint: () => void;
 }
 
 const ImageCanvas: React.FC<ImageCanvasProps> = ({
@@ -27,6 +31,10 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
   setIsPhotoBookModalOpen,
   photoBookOptions,
   onCreatePhotoBook,
+  isPhotoPrintModalOpen,
+  setIsPhotoPrintModalOpen,
+  photoPrintOptions,
+  onCreatePhotoPrint,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [selectedImage, setSelectedImage] = useState<fabric.Object | null>(
@@ -430,7 +438,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
         </button>
         {/* Make Photo Print Button with Tooltip */}
         <button
-          onClick={() => setIsPhotoBookModalOpen(!isPhotoBookModalOpen)}
+          onClick={() => setIsPhotoPrintModalOpen(!isPhotoPrintModalOpen)}
           className="relative p-2 group"
         >
           <FaImage size={20} />
