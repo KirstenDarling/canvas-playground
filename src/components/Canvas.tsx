@@ -8,6 +8,9 @@ import PhotoPrintModal from "./PhotoPrintModal";
 
 const Canvas: React.FC = () => {
   const [images, setImages] = useState<any[]>([]);
+  const [shouldCreatePrint, setShouldCreatePrint] = useState<boolean>(false);
+  const [shouldCreatePhotoBook, setShouldCreatePhotoBook] =
+    useState<boolean>(false);
   const [isGalleryVisible, setIsGalleryVisible] = useState(true);
   const [isPhotoBookModalOpen, setIsPhotoBookModalOpen] = useState(false);
   const [photoBookOptions, setPhotoBookOptions] = useState({
@@ -38,15 +41,15 @@ const Canvas: React.FC = () => {
     setPhotoPrintOptions({ ...photoPrintOptions, [name]: value });
   };
 
-  const handleCreatePhotoBook = () => {
-    console.log("Creating photo book with options:", photoBookOptions);
-    console.log("Using images:", images);
+  const handleCreatePhotoBook = (options: { pages: number; size: string }) => {
+    setShouldCreatePhotoBook(true);
+    setShouldCreatePrint(false);
     setIsPhotoBookModalOpen(false);
   };
 
-  const handleCreatePhotoPrint = () => {
-    console.log("Creating photo print with options:", photoBookOptions);
-    console.log("Using images:", images);
+  const handleCreatePhotoPrint = (options: { pages: number; size: string }) => {
+    setShouldCreatePrint(true);
+    setShouldCreatePhotoBook(false);
     setIsPhotoPrintModalOpen(false);
   };
 
@@ -82,11 +85,11 @@ const Canvas: React.FC = () => {
             isPhotoBookModalOpen={isPhotoBookModalOpen}
             setIsPhotoBookModalOpen={setIsPhotoBookModalOpen}
             photoBookOptions={photoBookOptions}
-            onCreatePhotoBook={handleCreatePhotoBook}
             isPhotoPrintModalOpen={isPhotoPrintModalOpen}
             setIsPhotoPrintModalOpen={setIsPhotoPrintModalOpen}
             photoPrintOptions={photoPrintOptions}
-            onCreatePhotoPrint={handleCreatePhotoPrint}
+            shouldCreatePrint={shouldCreatePrint}
+            shouldCreatePhotoBook={shouldCreatePhotoBook}
           />
         </div>
       )}

@@ -16,11 +16,11 @@ interface ImageCanvasProps {
   setIsPhotoBookModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isPhotoBookModalOpen: boolean;
   photoBookOptions: { pages: number; size: string };
-  onCreatePhotoBook: () => void;
   setIsPhotoPrintModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isPhotoPrintModalOpen: boolean;
   photoPrintOptions: { pages: number; size: string };
-  onCreatePhotoPrint: () => void;
+  shouldCreatePrint: boolean;
+  shouldCreatePhotoBook: boolean;
 }
 
 const ImageCanvas: React.FC<ImageCanvasProps> = ({
@@ -30,11 +30,11 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
   isPhotoBookModalOpen,
   setIsPhotoBookModalOpen,
   photoBookOptions,
-  onCreatePhotoBook,
   isPhotoPrintModalOpen,
   setIsPhotoPrintModalOpen,
   photoPrintOptions,
-  onCreatePhotoPrint,
+  shouldCreatePrint,
+  shouldCreatePhotoBook,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [selectedImage, setSelectedImage] = useState<fabric.Object | null>(
@@ -51,8 +51,35 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
       const canvas = canvasInstanceRef.current;
       canvas.clear();
 
-      const pageWidth = photoBookOptions.size === "4x6" ? 400 : 400;
-      const pageHeight = photoBookOptions.size === "4x6" ? 600 : 600;
+      const { size } = photoBookOptions;
+
+      let pageWidth;
+      let pageHeight;
+
+      switch (size) {
+        case "4x6":
+          pageWidth = 400 / 2;
+          pageHeight = 600 / 2;
+          break;
+        case "8x11":
+          pageWidth = 800 / 2;
+          pageHeight = 1100 / 2;
+          break;
+        case "11x14":
+          pageWidth = 1100 / 2;
+          pageHeight = 1400 / 2;
+          break;
+        case "12x12":
+          pageWidth = 1200 / 2;
+          pageHeight = 1200 / 2;
+          break;
+        default:
+          // Handle any unexpected sizes here, perhaps with default values or an error
+          pageWidth = 400; // Default to 4x6
+          pageHeight = 600;
+          break;
+      }
+
       const spineWidth = 50;
 
       const pagesPerSpread = 2;
@@ -118,6 +145,85 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
     }
   }, [photoBookOptions, canvasInstanceRef]);
 
+  const createPhotoPrintPages = useCallback(() => {
+    if (canvasInstanceRef.current) {
+      const canvas = canvasInstanceRef.current;
+      canvas.clear();
+
+      const { size } = photoPrintOptions;
+
+      let pageWidth;
+      let pageHeight;
+
+      switch (size) {
+        case "4x6":
+          pageWidth = 400 / 2;
+          pageHeight = 600 / 2;
+          break;
+        case "8x11":
+          pageWidth = 800 / 2;
+          pageHeight = 1100 / 2;
+          break;
+        case "11x14":
+          pageWidth = 1100 / 2;
+          pageHeight = 1400 / 2;
+          break;
+        case "12x12":
+          pageWidth = 1200 / 2;
+          pageHeight = 1200 / 2;
+          break;
+        default:
+          // Handle any unexpected sizes here, perhaps with default values or an error
+          pageWidth = 400; // Default to 4x6
+          pageHeight = 600;
+          break;
+      }
+
+      const spineWidth = 50;
+
+      const pagesPerSpread = 2;
+      // const numPages = photoPrintOptions.pages;
+      const numPages = 1;
+
+      const canvasWidth = 1200;
+      const padding =
+        (canvasWidth - pageWidth * pagesPerSpread - spineWidth) / 3;
+      const spreadWidth = pageWidth * pagesPerSpread + padding + spineWidth;
+      const numSpreads = Math.ceil(numPages / pagesPerSpread);
+
+      for (let i = 0; i < numSpreads; i++) {
+        const initialOffset = i * spreadWidth + padding + spineWidth + padding;
+
+        for (let j = 0; j < pagesPerSpread; j++) {
+          const pageIndex = i * pagesPerSpread + j;
+          if (pageIndex < numPages) {
+            const rect = new fabric.Rect({
+              left: initialOffset + j * pageWidth,
+              top: 50,
+              width: pageWidth,
+              height: pageHeight,
+              stroke: "black",
+              strokeWidth: 2,
+              fill: "white",
+            });
+            canvas.add(rect);
+
+            const pageNumber = new fabric.IText((pageIndex + 1).toString(), {
+              left: rect.left! + pageWidth / 2,
+              top: rect.top! + pageHeight + 10,
+              fontSize: 16,
+              fontFamily: "Arial",
+              textAlign: "center",
+              originX: "center",
+            });
+            canvas.add(pageNumber);
+          }
+        }
+      }
+      canvas.renderAll();
+    }
+  }, [photoPrintOptions, canvasInstanceRef]);
+
   const handlePageChange = (newPage: number) => {
     if (newPage > 0 && newPage <= Math.ceil(photoBookOptions.pages / 2)) {
       setCurrentPage(newPage);
@@ -149,10 +255,18 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
   }, [currentPage, photoBookOptions]);
 
   useEffect(() => {
-    if (!isPhotoBookModalOpen) {
+    if (shouldCreatePrint) {
+      createPhotoPrintPages();
+    }
+    if (shouldCreatePhotoBook) {
       createPhotoBookPages();
     }
-  }, [isPhotoBookModalOpen, createPhotoBookPages]);
+  }, [
+    shouldCreatePrint,
+    shouldCreatePhotoBook,
+    createPhotoBookPages,
+    createPhotoPrintPages,
+  ]);
 
   useEffect(() => {
     const canvas = new fabric.Canvas(canvasRef.current!, {
@@ -181,6 +295,11 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
           }
           return false;
         }) as fabric.Rect | undefined;
+
+        img.set({
+          scaleX: 0.5,
+          scaleY: 0.5,
+        });
 
         if (page) {
           const scale = Math.min(
