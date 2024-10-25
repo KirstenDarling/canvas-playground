@@ -7,6 +7,7 @@ import {
   BsBookHalf,
 } from "react-icons/bs";
 import { BiText } from "react-icons/bi";
+import { FaImage } from "react-icons/fa";
 
 interface ImageCanvasProps {
   images: string[];
@@ -425,6 +426,16 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
           {isGalleryVisible ? "Hide Image Gallery" : "Show Image Gallery"}
           <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
             {isGalleryVisible ? "Hide Gallery" : "Show Gallery"}
+          </span>
+        </button>
+        {/* Make Photo Print Button with Tooltip */}
+        <button
+          onClick={() => setIsPhotoBookModalOpen(!isPhotoBookModalOpen)}
+          className="relative p-2 group"
+        >
+          <FaImage size={20} />
+          <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
+            Make Single Photo Print
           </span>
         </button>
         {/* Make Photo Book Button with Tooltip */}
