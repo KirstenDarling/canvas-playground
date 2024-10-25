@@ -21,6 +21,10 @@ interface ImageCanvasProps {
   photoPrintOptions: { pages: number; size: string };
   shouldCreatePrint: boolean;
   shouldCreatePhotoBook: boolean;
+  isPhotoTilesModalOpen: boolean;
+  setIsPhotoTilesModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  photoTilesOptions: { pages: number; size: string };
+  shouldCreateTiles: boolean;
 }
 
 const ImageCanvas: React.FC<ImageCanvasProps> = ({
@@ -35,6 +39,10 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
   photoPrintOptions,
   shouldCreatePrint,
   shouldCreatePhotoBook,
+  isPhotoTilesModalOpen,
+  setIsPhotoTilesModalOpen,
+  photoTilesOptions,
+  shouldCreateTiles,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [selectedImage, setSelectedImage] = useState<fabric.Object | null>(
@@ -58,8 +66,8 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
 
       switch (size) {
         case "4x6":
-          pageWidth = 400 / 2;
-          pageHeight = 600 / 2;
+          pageWidth = 400;
+          pageHeight = 600;
           break;
         case "8x11":
           pageWidth = 800 / 2;
@@ -85,7 +93,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
       const pagesPerSpread = 2;
       const numPages = photoBookOptions.pages;
 
-      const canvasWidth = 1200;
+      const canvasWidth = 1300;
       const padding =
         (canvasWidth - pageWidth * pagesPerSpread - spineWidth) / 3;
       const spreadWidth = pageWidth * pagesPerSpread + padding + spineWidth;
@@ -157,8 +165,8 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
 
       switch (size) {
         case "4x6":
-          pageWidth = 400 / 2;
-          pageHeight = 600 / 2;
+          pageWidth = 400;
+          pageHeight = 600;
           break;
         case "8x11":
           pageWidth = 800 / 2;
@@ -185,7 +193,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
       // const numPages = photoPrintOptions.pages;
       const numPages = 1;
 
-      const canvasWidth = 1200;
+      const canvasWidth = 1300;
       const padding =
         (canvasWidth - pageWidth * pagesPerSpread - spineWidth) / 3;
       const spreadWidth = pageWidth * pagesPerSpread + padding + spineWidth;
@@ -224,6 +232,71 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
     }
   }, [photoPrintOptions, canvasInstanceRef]);
 
+  const createPhotoTilesPages = useCallback(() => {
+    if (canvasInstanceRef.current) {
+      const canvas = canvasInstanceRef.current;
+      canvas.clear();
+
+      const { size } = photoTilesOptions;
+
+      let tileWidth;
+      let tileHeight;
+
+      switch (size) {
+        case "8x8":
+          tileWidth = 800 / 2;
+          tileHeight = 800 / 2;
+          break;
+        case "10x10":
+          tileWidth = 1000 / 2;
+          tileHeight = 1000 / 2;
+          break;
+        default:
+          tileWidth = 800 / 2; // Default to 8x8
+          tileHeight = 800 / 2;
+          break;
+      }
+
+      const numTiles = photoTilesOptions.pages;
+      const tilesPerRow = 3;
+      const numRows = Math.ceil(numTiles / tilesPerRow);
+
+      // Calculate the total width of the tiles in a row
+      const rowWidth = tilesPerRow * tileWidth;
+
+      // Calculate the starting left position to center the tiles
+      const initialOffset = (canvas.width! - rowWidth) / 2;
+
+      for (let i = 0; i < numTiles; i++) {
+        const row = Math.floor(i / tilesPerRow); // Calculate the row index
+        const col = i % tilesPerRow; // Calculate the column index
+
+        const rect = new fabric.Rect({
+          left: initialOffset + col * tileWidth,
+          top: 50 + row * tileHeight, // Position tiles in rows
+          width: tileWidth,
+          height: tileHeight,
+          stroke: "black",
+          strokeWidth: 2,
+          fill: "white",
+        });
+        canvas.add(rect);
+
+        const tileNumber = new fabric.IText((i + 1).toString(), {
+          left: rect.left! + tileWidth / 2,
+          top: rect.top! + tileHeight / 2, // Center the number within the tile
+          fontSize: 20,
+          fontFamily: "Arial",
+          textAlign: "center",
+          originX: "center",
+          originY: "center", // Center vertically
+        });
+        canvas.add(tileNumber);
+      }
+
+      canvas.renderAll();
+    }
+  }, [photoTilesOptions, canvasInstanceRef]);
   const handlePageChange = (newPage: number) => {
     if (newPage > 0 && newPage <= Math.ceil(photoBookOptions.pages / 2)) {
       setCurrentPage(newPage);
@@ -231,7 +304,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
       if (canvasInstanceRef.current) {
         const pageWidth = photoBookOptions.size === "4x6" ? 400 : 400;
         const spineWidth = 50;
-        const canvasWidth = 1200;
+        const canvasWidth = 1300;
         const padding = (canvasWidth - pageWidth * 2 - spineWidth) / 3;
         const spreadWidth = pageWidth * 2 + padding + spineWidth + padding;
 
@@ -261,17 +334,22 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
     if (shouldCreatePhotoBook) {
       createPhotoBookPages();
     }
+    if (shouldCreateTiles) {
+      createPhotoTilesPages();
+    }
   }, [
     shouldCreatePrint,
     shouldCreatePhotoBook,
+    shouldCreateTiles,
     createPhotoBookPages,
     createPhotoPrintPages,
+    createPhotoTilesPages,
   ]);
 
   useEffect(() => {
     const canvas = new fabric.Canvas(canvasRef.current!, {
-      width: 1200,
-      height: 800,
+      width: 1300,
+      height: 1000,
       backgroundColor: "#fff",
       selection: true,
     });
@@ -573,6 +651,16 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
           <BsBookHalf size={20} />
           <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
             Make Photo Book
+          </span>
+        </button>
+        {/* Make Photo Tiles Button with Tooltip */}
+        <button
+          onClick={() => setIsPhotoTilesModalOpen(!isPhotoTilesModalOpen)}
+          className="relative p-2 group"
+        >
+          <BsBookHalf size={20} />
+          <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
+            Make Photo Tiles
           </span>
         </button>
         {/* Crop Button with Tooltip */}

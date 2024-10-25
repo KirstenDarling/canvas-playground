@@ -5,12 +5,14 @@ import ImageGallery from "./ImageGallery";
 import PhotoBookModal from "./PhotoBookModal";
 import { useAuth0 } from "@auth0/auth0-react";
 import PhotoPrintModal from "./PhotoPrintModal";
+import PhotoTilesModal from "./PhotoTilesModal";
 
 const Canvas: React.FC = () => {
   const [images, setImages] = useState<any[]>([]);
   const [shouldCreatePrint, setShouldCreatePrint] = useState<boolean>(false);
   const [shouldCreatePhotoBook, setShouldCreatePhotoBook] =
     useState<boolean>(false);
+  const [shouldCreateTiles, setShouldCreateTiles] = useState<boolean>(false);
   const [isGalleryVisible, setIsGalleryVisible] = useState(true);
   const [isPhotoBookModalOpen, setIsPhotoBookModalOpen] = useState(false);
   const [photoBookOptions, setPhotoBookOptions] = useState({
@@ -19,8 +21,13 @@ const Canvas: React.FC = () => {
   });
   const [isPhotoPrintModalOpen, setIsPhotoPrintModalOpen] = useState(false);
   const [photoPrintOptions, setPhotoPrintOptions] = useState({
-    pages: 10,
+    pages: 1,
     size: "4x6",
+  });
+  const [isPhotoTilesModalOpen, setIsPhotoTilesModalOpen] = useState(false);
+  const [photoTilesOptions, setPhotoTilesOptions] = useState({
+    pages: 6,
+    size: "8x8",
   });
 
   const handleDrop = (newImages: any) => {
@@ -41,16 +48,32 @@ const Canvas: React.FC = () => {
     setPhotoPrintOptions({ ...photoPrintOptions, [name]: value });
   };
 
+  const handlePhotoTilesChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = event.target;
+    setPhotoTilesOptions({ ...photoTilesOptions, [name]: value });
+  };
+
   const handleCreatePhotoBook = (options: { pages: number; size: string }) => {
     setShouldCreatePhotoBook(true);
     setShouldCreatePrint(false);
+    setShouldCreateTiles(false);
     setIsPhotoBookModalOpen(false);
   };
 
   const handleCreatePhotoPrint = (options: { pages: number; size: string }) => {
     setShouldCreatePrint(true);
     setShouldCreatePhotoBook(false);
+    setShouldCreateTiles(false);
     setIsPhotoPrintModalOpen(false);
+  };
+
+  const handleCreatePhotoTiles = (options: { pages: number; size: string }) => {
+    setShouldCreateTiles(true);
+    setShouldCreatePhotoBook(false);
+    setShouldCreatePrint(false);
+    setIsPhotoTilesModalOpen(false);
   };
 
   const { isAuthenticated, isLoading } = useAuth0();
@@ -73,6 +96,13 @@ const Canvas: React.FC = () => {
             options={photoPrintOptions}
             onChange={handlePhotoPrintChange}
           />
+          <PhotoTilesModal
+            isOpen={isPhotoTilesModalOpen}
+            onClose={() => setIsPhotoTilesModalOpen(false)}
+            onCreate={handleCreatePhotoTiles}
+            options={photoTilesOptions}
+            onChange={handlePhotoTilesChange}
+          />
           <ImageGallery
             onDrop={handleDrop}
             images={images}
@@ -90,6 +120,10 @@ const Canvas: React.FC = () => {
             photoPrintOptions={photoPrintOptions}
             shouldCreatePrint={shouldCreatePrint}
             shouldCreatePhotoBook={shouldCreatePhotoBook}
+            isPhotoTilesModalOpen={isPhotoTilesModalOpen}
+            setIsPhotoTilesModalOpen={setIsPhotoTilesModalOpen}
+            photoTilesOptions={photoTilesOptions}
+            shouldCreateTiles={shouldCreateTiles}
           />
         </div>
       )}
