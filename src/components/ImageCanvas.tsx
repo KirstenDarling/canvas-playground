@@ -659,7 +659,6 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
           onClick={() => setIsPhotoTilesModalOpen(!isPhotoTilesModalOpen)}
           className="relative p-2 group"
         >
-          <BsBookHalf size={20} />
           <BsGrid3X3GapFill size={20} />
           <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
             Make Photo Tiles
