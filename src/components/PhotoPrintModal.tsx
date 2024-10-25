@@ -22,24 +22,7 @@ const PhotoPrintModal: React.FC<PhotoPrintModalProps> = ({
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
       <div className="bg-white p-8 rounded-md">
-        <h2 className="text-xl font-bold mb-4">
-          TESTING THIS SHOULD BE DIFFERENT
-        </h2>
-        <div className="mb-4">
-          <label htmlFor="pages" className="block text-gray-700 font-bold mb-2">
-            Number of Pages (1-20):
-          </label>
-          <input
-            type="number"
-            id="pages"
-            name="pages"
-            min="1"
-            max="20"
-            value={options.pages}
-            onChange={onChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-        </div>
+        <h2 className="text-xl font-bold mb-4">Create Single Photo Print</h2>
         <div className="mb-4">
           <label htmlFor="size" className="block text-gray-700 font-bold mb-2">
             Page Size:
@@ -62,7 +45,7 @@ const PhotoPrintModal: React.FC<PhotoPrintModalProps> = ({
             onClick={() => onCreate(options)}
             className="bg-blue-500 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-full shadow-sm transition-all duration-200"
           >
-            Create Photo Book
+            Create Photo Print
           </button>
           <button
             onClick={onClose}
