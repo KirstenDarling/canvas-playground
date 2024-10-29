@@ -83,7 +83,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
           pageHeight = 1200 / 2;
           break;
         default:
-          pageWidth = 400; // Default to 4x6
+          pageWidth = 400;
           pageHeight = 600;
           break;
       }
@@ -92,12 +92,10 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
       const pagesPerSpread = 2;
       const numPages = photoBookOptions.pages;
 
-      const spreadMarginTopBottom = 50; // Margin for top and bottom of each spread
+      const spreadMarginTopBottom = 50;
 
-      // Get 90% of screen width
       const screenWidth = window.innerWidth * 0.9;
 
-      // Calculate canvas dimensions
       const canvasWidth = screenWidth;
       const canvasHeight =
         (numPages / pagesPerSpread) *
@@ -107,7 +105,6 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
       canvas.setWidth(canvasWidth);
       canvas.setHeight(canvasHeight);
 
-      // Spine positioned on the left
       const spineLeft = 50;
       const spineTop = 50 + spreadMarginTopBottom;
 
@@ -133,12 +130,10 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
       });
       canvas.add(spineText);
 
-      // Calculate horizontal center position for pages
       const pageAreaWidth = canvasWidth - spineWidth - 100;
       const pageAreaLeft =
         (pageAreaWidth - pageWidth * pagesPerSpread) / 2 + spineWidth + 50;
 
-      // Render pages
       for (let i = 0; i < numPages; i++) {
         const pageLeft = pageAreaLeft + (i % pagesPerSpread) * pageWidth;
         const pageTop =
@@ -202,8 +197,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
           pageHeight = 1200 / 2;
           break;
         default:
-          // Handle any unexpected sizes here, perhaps with default values or an error
-          pageWidth = 400; // Default to 4x6
+          pageWidth = 400;
           pageHeight = 600;
           break;
       }
@@ -211,7 +205,6 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
       const spineWidth = 50;
 
       const pagesPerSpread = 2;
-      // const numPages = photoPrintOptions.pages;
       const numPages = 1;
 
       const canvasWidth = 1300;
@@ -274,7 +267,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
           tileHeight = 1000 / 2;
           break;
         default:
-          tileWidth = 800 / 2; // Default to 8x8
+          tileWidth = 800 / 2;
           tileHeight = 800 / 2;
           break;
       }
@@ -283,19 +276,17 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
       const tilesPerRow = 3;
       const numRows = Math.ceil(numTiles / tilesPerRow);
 
-      // Calculate the total width of the tiles in a row
       const rowWidth = tilesPerRow * tileWidth;
 
-      // Calculate the starting left position to center the tiles
       const initialOffset = (canvas.width! - rowWidth) / 2;
 
       for (let i = 0; i < numTiles; i++) {
-        const row = Math.floor(i / tilesPerRow); // Calculate the row index
-        const col = i % tilesPerRow; // Calculate the column index
+        const row = Math.floor(i / tilesPerRow);
+        const col = i % tilesPerRow;
 
         const rect = new fabric.Rect({
           left: initialOffset + col * tileWidth,
-          top: 50 + row * tileHeight, // Position tiles in rows
+          top: 50 + row * tileHeight,
           width: tileWidth,
           height: tileHeight,
           stroke: "black",
@@ -307,12 +298,11 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
 
         const tileNumber = new fabric.IText((i + 1).toString(), {
           left: rect.left! + tileWidth / 2,
-          top: rect.top! + tileHeight / 2, // Center the number within the tile
-          fontSize: 20,
+          top: rect.top! + tileHeight / 2,
           fontFamily: "Arial",
           textAlign: "center",
           originX: "center",
-          originY: "center", // Center vertically
+          originY: "center",
         });
         canvas.add(tileNumber);
       }
