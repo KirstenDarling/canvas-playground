@@ -108,6 +108,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
         stroke: "black",
         strokeWidth: 2,
         fill: "white",
+        selectable: false,
       });
       canvas.add(spine);
 
@@ -135,6 +136,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
               stroke: "black",
               strokeWidth: 2,
               fill: "white",
+              selectable: false,
             });
             canvas.add(rect);
 
@@ -214,6 +216,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
               stroke: "black",
               strokeWidth: 2,
               fill: "white",
+              selectable: false,
             });
             canvas.add(rect);
 
@@ -280,6 +283,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
           stroke: "black",
           strokeWidth: 2,
           fill: "white",
+          selectable: false,
         });
         canvas.add(rect);
 
