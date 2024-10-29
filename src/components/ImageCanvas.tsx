@@ -94,8 +94,11 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
 
       const spreadMarginTopBottom = 50; // Margin for top and bottom of each spread
 
+      // Get 90% of screen width
+      const screenWidth = window.innerWidth * 0.9;
+
       // Calculate canvas dimensions
-      const canvasWidth = pageWidth * pagesPerSpread + spineWidth + 100;
+      const canvasWidth = screenWidth;
       const canvasHeight =
         (numPages / pagesPerSpread) *
           (pageHeight + spreadMarginTopBottom * 2 + 50) +
@@ -106,7 +109,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
 
       // Spine positioned on the left
       const spineLeft = 50;
-      const spineTop = 50 + spreadMarginTopBottom; // Adjust spine top position for margin
+      const spineTop = 50 + spreadMarginTopBottom;
 
       const spine = new fabric.Rect({
         left: spineLeft,
@@ -130,14 +133,19 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
       });
       canvas.add(spineText);
 
+      // Calculate horizontal center position for pages
+      const pageAreaWidth = canvasWidth - spineWidth - 100;
+      const pageAreaLeft =
+        (pageAreaWidth - pageWidth * pagesPerSpread) / 2 + spineWidth + 50;
+
       // Render pages
       for (let i = 0; i < numPages; i++) {
-        const pageLeft = spineWidth + 50 + (i % pagesPerSpread) * pageWidth;
+        const pageLeft = pageAreaLeft + (i % pagesPerSpread) * pageWidth;
         const pageTop =
           Math.floor(i / pagesPerSpread) *
             (pageHeight + spreadMarginTopBottom * 2 + 50) +
           50 +
-          spreadMarginTopBottom; // Adjust page top position for margin
+          spreadMarginTopBottom;
 
         const rect = new fabric.Rect({
           left: pageLeft,
@@ -165,6 +173,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
       canvas.renderAll();
     }
   }, [photoBookOptions, canvasInstanceRef]);
+
   const createPhotoPrintPages = useCallback(() => {
     if (canvasInstanceRef.current) {
       const canvas = canvasInstanceRef.current;
