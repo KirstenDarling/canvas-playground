@@ -83,26 +83,37 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
           pageHeight = 1200 / 2;
           break;
         default:
-          // Handle any unexpected sizes here, perhaps with default values or an error
           pageWidth = 400; // Default to 4x6
           pageHeight = 600;
           break;
       }
 
       const spineWidth = 50;
-
       const pagesPerSpread = 2;
       const numPages = photoBookOptions.pages;
 
-      const canvasWidth = 1300;
-      const padding =
-        (canvasWidth - pageWidth * pagesPerSpread - spineWidth) / 3;
-      const spreadWidth = pageWidth * pagesPerSpread + padding + spineWidth;
-      const numSpreads = Math.ceil(numPages / pagesPerSpread);
+      const spreadMarginTopBottom = 50; // Margin for top and bottom of each spread
+
+      // Get 90% of screen width
+      const screenWidth = window.innerWidth * 0.9;
+
+      // Calculate canvas dimensions
+      const canvasWidth = screenWidth;
+      const canvasHeight =
+        (numPages / pagesPerSpread) *
+          (pageHeight + spreadMarginTopBottom * 2 + 50) +
+        100;
+
+      canvas.setWidth(canvasWidth);
+      canvas.setHeight(canvasHeight);
+
+      // Spine positioned on the left
+      const spineLeft = 50;
+      const spineTop = 50 + spreadMarginTopBottom;
 
       const spine = new fabric.Rect({
-        left: padding,
-        top: 50,
+        left: spineLeft,
+        top: spineTop,
         width: spineWidth,
         height: pageHeight,
         stroke: "black",
@@ -122,36 +133,43 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
       });
       canvas.add(spineText);
 
-      for (let i = 0; i < numSpreads; i++) {
-        const initialOffset = i * spreadWidth + padding + spineWidth + padding;
+      // Calculate horizontal center position for pages
+      const pageAreaWidth = canvasWidth - spineWidth - 100;
+      const pageAreaLeft =
+        (pageAreaWidth - pageWidth * pagesPerSpread) / 2 + spineWidth + 50;
 
-        for (let j = 0; j < pagesPerSpread; j++) {
-          const pageIndex = i * pagesPerSpread + j;
-          if (pageIndex < numPages) {
-            const rect = new fabric.Rect({
-              left: initialOffset + j * pageWidth,
-              top: 50,
-              width: pageWidth,
-              height: pageHeight,
-              stroke: "black",
-              strokeWidth: 2,
-              fill: "white",
-              selectable: false,
-            });
-            canvas.add(rect);
+      // Render pages
+      for (let i = 0; i < numPages; i++) {
+        const pageLeft = pageAreaLeft + (i % pagesPerSpread) * pageWidth;
+        const pageTop =
+          Math.floor(i / pagesPerSpread) *
+            (pageHeight + spreadMarginTopBottom * 2 + 50) +
+          50 +
+          spreadMarginTopBottom;
 
-            const pageNumber = new fabric.IText((pageIndex + 1).toString(), {
-              left: rect.left! + pageWidth / 2,
-              top: rect.top! + pageHeight + 10,
-              fontSize: 16,
-              fontFamily: "Arial",
-              textAlign: "center",
-              originX: "center",
-            });
-            canvas.add(pageNumber);
-          }
-        }
+        const rect = new fabric.Rect({
+          left: pageLeft,
+          top: pageTop,
+          width: pageWidth,
+          height: pageHeight,
+          stroke: "black",
+          strokeWidth: 2,
+          fill: "white",
+          selectable: false,
+        });
+        canvas.add(rect);
+
+        const pageNumber = new fabric.IText((i + 1).toString(), {
+          left: rect.left! + pageWidth / 2,
+          top: rect.top! + pageHeight + 10,
+          fontSize: 16,
+          fontFamily: "Arial",
+          textAlign: "center",
+          originX: "center",
+        });
+        canvas.add(pageNumber);
       }
+
       canvas.renderAll();
     }
   }, [photoBookOptions, canvasInstanceRef]);
@@ -302,24 +320,6 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
       canvas.renderAll();
     }
   }, [photoTilesOptions, canvasInstanceRef]);
-  const handlePageChange = (newPage: number) => {
-    if (newPage > 0 && newPage <= Math.ceil(photoBookOptions.pages / 2)) {
-      setCurrentPage(newPage);
-
-      if (canvasInstanceRef.current) {
-        const pageWidth = photoBookOptions.size === "4x6" ? 400 : 400;
-        const spineWidth = 50;
-        const canvasWidth = 1300;
-        const padding = (canvasWidth - pageWidth * 2 - spineWidth) / 3;
-        const spreadWidth = pageWidth * 2 + padding + spineWidth + padding;
-
-        const xOffset =
-          (newPage - 1) * spreadWidth + padding + spineWidth + padding;
-
-        canvasInstanceRef.current.absolutePan(new fabric.Point(xOffset, 0));
-      }
-    }
-  };
 
   useEffect(() => {
     if (canvasInstanceRef.current) {
@@ -354,7 +354,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
   useEffect(() => {
     const canvas = new fabric.Canvas(canvasRef.current!, {
       width: 1300,
-      height: 1000,
+      height: 500,
       backgroundColor: "#fff",
       selection: true,
     });
@@ -626,7 +626,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
   }, []);
 
   return (
-    <div className="relative">
+    <div className="relative h-[700px]">
       <div className="flex gap-2 mb-4">
         {/* Toggle Gallery Button */}
         <button
@@ -741,26 +741,9 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
           </span>
         </button>
       </div>
-      <canvas ref={canvasRef} className="border border-gray-500 w-full" />
-      {/* Pagination Controls */}
-
-      <div className="flex justify-center mt-4">
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="bg-gray-300  
- hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l"
-        >
-          Prev
-        </button>
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === Math.ceil(photoBookOptions.pages / 2)}
-          className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r"
-        >
-          Next
-        </button>
-      </div>
+      {/* <div className="border border-gray-500 w-[1300px] h-[500px] overflow-y-auto"> */}
+      <canvas ref={canvasRef} className="w-full border border-gray-500" />
+      {/* </div> */}
     </div>
   );
 };
