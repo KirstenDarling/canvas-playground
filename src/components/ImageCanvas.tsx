@@ -83,7 +83,6 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
           pageHeight = 1200 / 2;
           break;
         default:
-          // Handle any unexpected sizes here, perhaps with default values or an error
           pageWidth = 400; // Default to 4x6
           pageHeight = 600;
           break;
@@ -122,15 +121,15 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
       });
       canvas.add(spineText);
 
-      for (let i = 0; i < numSpreads; i++) {
-        const initialOffset = i * spreadWidth + padding + spineWidth + padding;
+      for (let i = 0; i < numPages; i += pagesPerSpread) {
+        const leftOffset = padding;
 
         for (let j = 0; j < pagesPerSpread; j++) {
-          const pageIndex = i * pagesPerSpread + j;
+          const pageIndex = i + j;
           if (pageIndex < numPages) {
             const rect = new fabric.Rect({
-              left: initialOffset + j * pageWidth,
-              top: 50,
+              left: leftOffset + j * pageWidth,
+              top: 50 + i * (pageHeight + 50),
               width: pageWidth,
               height: pageHeight,
               stroke: "black",
@@ -152,6 +151,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
           }
         }
       }
+      canvas.setHeight(numPages * (pageHeight + 50) + 100);
       canvas.renderAll();
     }
   }, [photoBookOptions, canvasInstanceRef]);
@@ -336,7 +336,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
   useEffect(() => {
     const canvas = new fabric.Canvas(canvasRef.current!, {
       width: 1300,
-      height: 1000,
+      height: 500,
       backgroundColor: "#fff",
       selection: true,
     });
@@ -608,7 +608,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
   }, []);
 
   return (
-    <div className="relative">
+    <div className="relative h-[700px]">
       <div className="flex gap-2 mb-4">
         {/* Toggle Gallery Button */}
         <button
@@ -723,7 +723,9 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
           </span>
         </button>
       </div>
-      <canvas ref={canvasRef} className="border border-gray-500 w-full" />
+      <div className="border border-gray-500 w-[1300px] h-[500px] overflow-y-auto">
+        <canvas ref={canvasRef} className="w-full" />
+      </div>
     </div>
   );
 };
