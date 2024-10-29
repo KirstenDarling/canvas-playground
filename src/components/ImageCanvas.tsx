@@ -354,7 +354,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
   useEffect(() => {
     const canvas = new fabric.Canvas(canvasRef.current!, {
       width: 1300,
-      height: 500,
+      height: 1000,
       backgroundColor: "#fff",
       selection: true,
     });
@@ -741,9 +741,9 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
           </span>
         </button>
       </div>
-      {/* <div className="border border-gray-500 w-[1300px] h-[500px] overflow-y-auto"> */}
-      <canvas ref={canvasRef} className="w-full border border-gray-500" />
-      {/* </div> */}
+      <div className="border border-gray-500 w-[1300px] h-[1000px] overflow-y-auto">
+        <canvas ref={canvasRef} className="w-full" />
+      </div>
     </div>
   );
 };
