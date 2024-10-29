@@ -302,24 +302,6 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
       canvas.renderAll();
     }
   }, [photoTilesOptions, canvasInstanceRef]);
-  const handlePageChange = (newPage: number) => {
-    if (newPage > 0 && newPage <= Math.ceil(photoBookOptions.pages / 2)) {
-      setCurrentPage(newPage);
-
-      if (canvasInstanceRef.current) {
-        const pageWidth = photoBookOptions.size === "4x6" ? 400 : 400;
-        const spineWidth = 50;
-        const canvasWidth = 1300;
-        const padding = (canvasWidth - pageWidth * 2 - spineWidth) / 3;
-        const spreadWidth = pageWidth * 2 + padding + spineWidth + padding;
-
-        const xOffset =
-          (newPage - 1) * spreadWidth + padding + spineWidth + padding;
-
-        canvasInstanceRef.current.absolutePan(new fabric.Point(xOffset, 0));
-      }
-    }
-  };
 
   useEffect(() => {
     if (canvasInstanceRef.current) {
@@ -742,25 +724,6 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
         </button>
       </div>
       <canvas ref={canvasRef} className="border border-gray-500 w-full" />
-      {/* Pagination Controls */}
-
-      <div className="flex justify-center mt-4">
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="bg-gray-300  
- hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l"
-        >
-          Prev
-        </button>
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === Math.ceil(photoBookOptions.pages / 2)}
-          className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r"
-        >
-          Next
-        </button>
-      </div>
     </div>
   );
 };
