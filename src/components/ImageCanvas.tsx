@@ -26,6 +26,8 @@ interface ImageCanvasProps {
   images: string[];
   isGalleryVisible: boolean;
   setIsGalleryVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  isFullscreen: boolean;
+  setIsFullscreen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsPhotoBookModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isPhotoBookModalOpen: boolean;
   photoBookOptions: { pages: number; size: string };
@@ -38,12 +40,15 @@ interface ImageCanvasProps {
   setIsPhotoTilesModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   photoTilesOptions: { pages: number; size: string };
   shouldCreateTiles: boolean;
+  onFullscreenToggle: () => void;
 }
 
 const ImageCanvas: React.FC<ImageCanvasProps> = ({
   images,
   isGalleryVisible,
   setIsGalleryVisible,
+  isFullscreen,
+  setIsFullscreen,
   isPhotoBookModalOpen,
   setIsPhotoBookModalOpen,
   photoBookOptions,
@@ -56,6 +61,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
   setIsPhotoTilesModalOpen,
   photoTilesOptions,
   shouldCreateTiles,
+  onFullscreenToggle,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [selectedImage, setSelectedImage] = useState<fabric.Object | null>(
@@ -169,6 +175,18 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
           {isGalleryVisible ? "Hide Image Gallery" : "Show Image Gallery"}
           <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
             {isGalleryVisible ? "Hide Gallery" : "Show Gallery"}
+          </span>
+        </button>
+        <button
+          onClick={() => {
+            setIsFullscreen(!isFullscreen);
+            onFullscreenToggle();
+          }}
+          className="bg-purple-400 hover:bg-purple-600 text-white font-medium py-2 px-4 rounded-full shadow-sm transition-all duration-200"
+        >
+          {isFullscreen ? "Hide Fullscreen" : "Show Fullscreen"}
+          <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
+            {isFullscreen ? "Hide Fullscreen" : "Show Fullscreen"}
           </span>
         </button>
         <button
