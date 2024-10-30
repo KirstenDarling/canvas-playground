@@ -72,11 +72,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
     cropImage,
   } = useCropping(selectedImage!, canvasInstanceRef);
 
-  const { handleDrop, handleDragOver } = useImageHandling(
-    canvasInstanceRef,
-    setIsCropping,
-    setCropRect
-  );
+  const { handleDrop, handleDragOver } = useImageHandling(canvasInstanceRef);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { isAddingText, setIsAddingText, addTextToSpine } =
@@ -133,6 +129,8 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
     photoTilesOptions,
   ]);
 
+  console.log(selectedImage, isCropping, hasImage);
+
   return (
     <div className="relative h-[700px]">
       <div className="flex gap-2 mb-4">
@@ -174,10 +172,10 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
         </button>
         <button
           onClick={startCropping}
-          disabled={!selectedImage || isCropping || !hasImage}
+          disabled={!selectedImage || isCropping || hasImage}
           className={`relative p-2 group 
             ${
-              !selectedImage || isCropping || !hasImage
+              !selectedImage || isCropping || hasImage
                 ? "opacity-50 cursor-not-allowed"
                 : ""
             }`}
@@ -189,9 +187,9 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
         </button>
         <button
           onClick={cropImage}
-          disabled={!cropRect || !hasImage}
+          disabled={!cropRect || hasImage}
           className={`relative p-2 group 
-            ${!cropRect || !hasImage ? "opacity-50 cursor-not-allowed" : ""}`}
+            ${!cropRect || hasImage ? "opacity-50 cursor-not-allowed" : ""}`}
         >
           <BsArrowsFullscreen size={20} />
           <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
@@ -205,10 +203,10 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
               canvasInstanceRef.current!.requestRenderAll();
             }
           }}
-          disabled={!selectedImage || !hasImage}
+          disabled={!selectedImage || hasImage}
           className={`relative p-2 group 
             ${
-              !selectedImage || !hasImage ? "opacity-50 cursor-not-allowed" : ""
+              !selectedImage || hasImage ? "opacity-50 cursor-not-allowed" : ""
             }`}
         >
           <BsImage size={20} className="transform rotate-y-180" />
@@ -223,10 +221,10 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
               canvasInstanceRef.current!.requestRenderAll();
             }
           }}
-          disabled={!selectedImage || !hasImage}
+          disabled={!selectedImage || hasImage}
           className={`relative p-2 group
             ${
-              !selectedImage || !hasImage ? "opacity-50 cursor-not-allowed" : ""
+              !selectedImage || hasImage ? "opacity-50 cursor-not-allowed" : ""
             }`}
         >
           <BsImage size={20} className="transform rotate-x-180" />

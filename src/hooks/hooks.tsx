@@ -70,9 +70,7 @@ export const useCropping = (
 };
 
 export const useImageHandling = (
-  canvasInstanceRef: React.MutableRefObject<fabric.Canvas | null>,
-  setIsCropping: React.Dispatch<React.SetStateAction<boolean>>,
-  setCropRect: React.Dispatch<React.SetStateAction<fabric.Rect | null>>
+  canvasInstanceRef: React.MutableRefObject<fabric.Canvas | null>
 ) => {
   const handleDrop = useCallback(
     (e: DragEvent) => {
@@ -123,6 +121,7 @@ export const useImageHandling = (
         }
 
         canvasInstanceRef.current!.add(img);
+        canvasInstanceRef.current!.setActiveObject(img);
         canvasInstanceRef.current!.renderAll();
       });
     },
