@@ -7,7 +7,7 @@ import {
   BsBookHalf,
   BsGrid3X3GapFill,
 } from "react-icons/bs";
-import { BiText } from "react-icons/bi";
+import { BiText, BiFullscreen, BiExitFullscreen } from "react-icons/bi"; // Import icons
 import { FaImage } from "react-icons/fa";
 import {
   useCanvas,
@@ -180,13 +180,18 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
         <button
           onClick={() => {
             setIsFullscreen(!isFullscreen);
+            setIsGalleryVisible(!isGalleryVisible);
             onFullscreenToggle();
           }}
-          className="bg-purple-400 hover:bg-purple-600 text-white font-medium py-2 px-4 rounded-full shadow-sm transition-all duration-200"
+          className="relative p-2 group"
         >
-          {isFullscreen ? "Hide Fullscreen" : "Show Fullscreen"}
+          {isFullscreen ? (
+            <BiExitFullscreen size={20} />
+          ) : (
+            <BiFullscreen size={20} />
+          )}
           <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
-            {isFullscreen ? "Hide Fullscreen" : "Show Fullscreen"}
+            {isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
           </span>
         </button>
         <button
