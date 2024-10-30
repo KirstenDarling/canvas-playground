@@ -1,4 +1,3 @@
-// src/components/Canvas.tsx
 import React, { useState } from "react";
 import ImageCanvas from "./ImageCanvas";
 import ImageGallery from "./ImageGallery";
