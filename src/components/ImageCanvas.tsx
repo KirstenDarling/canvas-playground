@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import * as fabric from "fabric";
 import {
   BsCrop,
@@ -129,7 +129,31 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
     photoTilesOptions,
   ]);
 
-  console.log(selectedImage, isCropping, hasImage);
+  const deleteSelectedImage = useCallback(() => {
+    if (selectedImage && canvasInstanceRef.current) {
+      canvasInstanceRef.current.remove(selectedImage);
+      canvasInstanceRef.current.requestRenderAll();
+      setSelectedImage(null);
+    }
+  }, [selectedImage]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (
+        (event.key === "Delete" ||
+          event.key === "Backspace" ||
+          event.key === "d") &&
+        selectedImage
+      ) {
+        deleteSelectedImage();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [selectedImage, deleteSelectedImage]);
 
   return (
     <div className="relative h-[700px]">
