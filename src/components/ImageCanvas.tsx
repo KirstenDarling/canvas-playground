@@ -78,7 +78,9 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
   const { isAddingText, setIsAddingText, addTextToSpine } =
     useTextAdding(canvasInstanceRef);
 
-  const { hasImage, hasPhotoBook } = useCanvas(canvasInstanceRef);
+  const { hasImage } = useCanvas(canvasInstanceRef);
+
+  const [hasPhotoBook, setHasPhotoBook] = useState(false);
 
   useEffect(() => {
     const canvas = new fabric.Canvas(canvasRef.current!, {
@@ -155,6 +157,8 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
     };
   }, [selectedImage, deleteSelectedImage]);
 
+  console.log(hasPhotoBook);
+
   return (
     <div className="relative h-[700px]">
       <div className="flex gap-2 mb-4">
@@ -168,7 +172,10 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
           </span>
         </button>
         <button
-          onClick={() => setIsPhotoPrintModalOpen(!isPhotoPrintModalOpen)}
+          onClick={() => {
+            setIsPhotoPrintModalOpen(!isPhotoPrintModalOpen);
+            setHasPhotoBook(false);
+          }}
           className="relative p-2 group"
         >
           <FaImage size={20} />
@@ -177,7 +184,10 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
           </span>
         </button>
         <button
-          onClick={() => setIsPhotoBookModalOpen(!isPhotoBookModalOpen)}
+          onClick={() => {
+            setIsPhotoBookModalOpen(!isPhotoBookModalOpen);
+            setHasPhotoBook(true);
+          }}
           className="relative p-2 group"
         >
           <BsBookHalf size={20} />
@@ -186,7 +196,10 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
           </span>
         </button>
         <button
-          onClick={() => setIsPhotoTilesModalOpen(!isPhotoTilesModalOpen)}
+          onClick={() => {
+            setIsPhotoTilesModalOpen(!isPhotoTilesModalOpen);
+            setHasPhotoBook(false);
+          }}
           className="relative p-2 group"
         >
           <BsGrid3X3GapFill size={20} />
