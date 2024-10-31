@@ -180,7 +180,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
         <button
           onClick={() => {
             setIsFullscreen(!isFullscreen);
-            setIsGalleryVisible(!isGalleryVisible);
+            setIsGalleryVisible(false);
             onFullscreenToggle();
           }}
           className="relative p-2 group"
