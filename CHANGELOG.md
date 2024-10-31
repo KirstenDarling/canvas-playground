@@ -26,4 +26,4 @@ Created the changelog, merged Development into Master, and created a fullscreen 
 - FIX Fullscreen button adjusted to work better with show/hide gallery button. [PR-19](https://github.com/KirstenDarling/canvas-playground/pull/19)
 - MERGED Development. [PR-20](https://github.com/KirstenDarling/canvas-playground/pull/20)
 - MINOR Added initial changelog. [PR-21](https://github.com/KirstenDarling/canvas-playground/pull/21)
-- OPEN Reopened Development for today's progress. [PR-21](https://github.com/KirstenDarling/canvas-playground/pull/21)
+- OPEN Reopened Development for today's progress. [PR-22](https://github.com/KirstenDarling/canvas-playground/pull/22)
