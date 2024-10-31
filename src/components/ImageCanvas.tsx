@@ -7,7 +7,7 @@ import {
   BsBookHalf,
   BsGrid3X3GapFill,
 } from "react-icons/bs";
-import { BiText } from "react-icons/bi";
+import { BiText, BiFullscreen, BiExitFullscreen } from "react-icons/bi"; // Import icons
 import { FaImage } from "react-icons/fa";
 import {
   useCanvas,
@@ -26,6 +26,8 @@ interface ImageCanvasProps {
   images: string[];
   isGalleryVisible: boolean;
   setIsGalleryVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  isFullscreen: boolean;
+  setIsFullscreen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsPhotoBookModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isPhotoBookModalOpen: boolean;
   photoBookOptions: { pages: number; size: string };
@@ -38,12 +40,15 @@ interface ImageCanvasProps {
   setIsPhotoTilesModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   photoTilesOptions: { pages: number; size: string };
   shouldCreateTiles: boolean;
+  onFullscreenToggle: () => void;
 }
 
 const ImageCanvas: React.FC<ImageCanvasProps> = ({
   images,
   isGalleryVisible,
   setIsGalleryVisible,
+  isFullscreen,
+  setIsFullscreen,
   isPhotoBookModalOpen,
   setIsPhotoBookModalOpen,
   photoBookOptions,
@@ -56,6 +61,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
   setIsPhotoTilesModalOpen,
   photoTilesOptions,
   shouldCreateTiles,
+  onFullscreenToggle,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [selectedImage, setSelectedImage] = useState<fabric.Object | null>(
@@ -169,6 +175,23 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
           {isGalleryVisible ? "Hide Image Gallery" : "Show Image Gallery"}
           <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
             {isGalleryVisible ? "Hide Gallery" : "Show Gallery"}
+          </span>
+        </button>
+        <button
+          onClick={() => {
+            setIsFullscreen(!isFullscreen);
+            setIsGalleryVisible(!isGalleryVisible);
+            onFullscreenToggle();
+          }}
+          className="relative p-2 group"
+        >
+          {isFullscreen ? (
+            <BiExitFullscreen size={20} />
+          ) : (
+            <BiFullscreen size={20} />
+          )}
+          <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
+            {isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
           </span>
         </button>
         <button

@@ -6,13 +6,16 @@ import { useAuth0 } from "@auth0/auth0-react";
 import PhotoPrintModal from "./PhotoPrintModal";
 import PhotoTilesModal from "./PhotoTilesModal";
 
-const Canvas: React.FC = () => {
+const Canvas: React.FC<{ onFullscreenToggle: () => void }> = ({
+  onFullscreenToggle,
+}) => {
   const [images, setImages] = useState<any[]>([]);
   const [shouldCreatePrint, setShouldCreatePrint] = useState<boolean>(false);
   const [shouldCreatePhotoBook, setShouldCreatePhotoBook] =
     useState<boolean>(false);
   const [shouldCreateTiles, setShouldCreateTiles] = useState<boolean>(false);
   const [isGalleryVisible, setIsGalleryVisible] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const [isPhotoBookModalOpen, setIsPhotoBookModalOpen] = useState(false);
   const [photoBookOptions, setPhotoBookOptions] = useState({
     pages: 10,
@@ -111,6 +114,8 @@ const Canvas: React.FC = () => {
             images={images}
             isGalleryVisible={isGalleryVisible}
             setIsGalleryVisible={setIsGalleryVisible}
+            isFullscreen={isFullscreen}
+            setIsFullscreen={setIsFullscreen}
             isPhotoBookModalOpen={isPhotoBookModalOpen}
             setIsPhotoBookModalOpen={setIsPhotoBookModalOpen}
             photoBookOptions={photoBookOptions}
@@ -123,6 +128,7 @@ const Canvas: React.FC = () => {
             setIsPhotoTilesModalOpen={setIsPhotoTilesModalOpen}
             photoTilesOptions={photoTilesOptions}
             shouldCreateTiles={shouldCreateTiles}
+            onFullscreenToggle={onFullscreenToggle}
           />
         </div>
       )}
