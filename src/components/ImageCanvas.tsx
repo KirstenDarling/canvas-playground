@@ -7,8 +7,10 @@ import {
   BsBookHalf,
   BsGrid3X3GapFill,
 } from "react-icons/bs";
-import { BiText, BiFullscreen, BiExitFullscreen } from "react-icons/bi"; // Import icons
+import { BiText, BiFullscreen, BiExitFullscreen } from "react-icons/bi";
 import { FaImage } from "react-icons/fa";
+import PreviewWindow from "./PreviewWindow";
+
 import {
   useCanvas,
   useCropping,
@@ -310,6 +312,9 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
       </div>
       <div className="border border-gray-500 w-[1300px] h-[1000px] overflow-y-auto">
         <canvas ref={canvasRef} className="w-full" />
+        {hasPhotoBook && (
+          <PreviewWindow canvasInstanceRef={canvasInstanceRef} />
+        )}
       </div>
     </div>
   );
