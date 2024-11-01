@@ -79,9 +79,18 @@ export const useImageHandling = (
       const imageUrl = e.dataTransfer!.getData("imageUrl");
 
       fabric.Image.fromURL(imageUrl, {}).then((img) => {
-        const rect = canvasInstanceRef
-          .current!.getObjects()
-          .find((obj) => obj instanceof fabric.Rect) as fabric.Rect | undefined;
+        const rect = canvasInstanceRef.current!.getObjects().find((obj) => {
+          if (obj instanceof fabric.Rect) {
+            const { left, top, width, height } = obj;
+            return (
+              offsetX >= left! &&
+              offsetX <= left! + width! &&
+              offsetY >= top! &&
+              offsetY <= top! + height!
+            );
+          }
+          return false;
+        }) as fabric.Rect | undefined;
 
         img.set({
           scaleX: 0.5,
@@ -101,19 +110,11 @@ export const useImageHandling = (
             scaleY: scale,
             selectable: true,
           });
-        } else {
-          img.set({
-            left: offsetX,
-            top: offsetY,
-            scaleX: 0.5,
-            scaleY: 0.5,
-            selectable: true,
-          });
-        }
 
-        canvasInstanceRef.current!.add(img);
-        canvasInstanceRef.current!.setActiveObject(img);
-        canvasInstanceRef.current!.renderAll();
+          canvasInstanceRef.current!.add(img);
+          canvasInstanceRef.current!.setActiveObject(img);
+          canvasInstanceRef.current!.renderAll();
+        }
       });
     },
     [canvasInstanceRef]
