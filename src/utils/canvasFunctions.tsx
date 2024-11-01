@@ -117,8 +117,11 @@ export const createPhotoBookPages = (
       canvas.add(rect);
 
       const pageNumber = new fabric.IText((i + 1).toString(), {
-        left: rect.left! + pageWidth / 2,
-        top: rect.top! + pageHeight + 10,
+        left:
+          i % 2 === 0
+            ? pageAreaLeft + 20
+            : pageAreaLeft + pageWidth * pagesPerSpread - 20,
+        top: pageTop - 30,
         fontSize: 16,
         fontFamily: "Arial",
         textAlign: "center",
