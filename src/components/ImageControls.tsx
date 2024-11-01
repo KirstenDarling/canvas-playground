@@ -170,10 +170,11 @@ const ImageControls: React.FC<ImageControlsProps> = ({
     <div className="flex gap-2 mb-4">
       <button
         onClick={() => setIsGalleryVisible(!isGalleryVisible)}
-        className="bg-purple-400 hover:bg-purple-600 text-white font-medium py-2 px-4 rounded-full shadow-sm transition-all duration-200"
+        className="bg-purple-500 hover:bg-purple-700 text-white font-medium py-1.5 px-3 rounded-md shadow-md transition-all duration-200"
       >
         {isGalleryVisible ? "Hide Image Gallery" : "Show Image Gallery"}
-        <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
+        <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-6 bg-gray-800 text-white text-xs px-1.5 py-0.5 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
+          {" "}
           {isGalleryVisible ? "Hide Gallery" : "Show Gallery"}
         </span>
       </button>

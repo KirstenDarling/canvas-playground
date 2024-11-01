@@ -13,21 +13,23 @@ const Profile = () => {
 
   return (
     <div>
-      <div className="bg-gray-100 p-4 rounded-lg shadow-md">
-        <div className="flex">
+      <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-4">
+        <div className="flex items-center">
           <img
             src={user ? user.picture : PlaceholderImage}
             alt={user ? user.name : "placeholder image"}
-            className="rounded-full h-20 w-20"
+            className="rounded-full h-16 w-16 border border-gray-300"
           />
-          <div className="flex flex-col ml-4">
-            <h2 className="text-xl font-semibold">
+          <div className="ml-4">
+            <h2 className="text-lg font-medium text-gray-800">
               {user ? user.name : "Hello"}
             </h2>
-            <p className="text-gray-600">
+            <p className="text-sm text-gray-600">
               {user ? user.email : "Please login below:"}
             </p>
-            <div className="flex">
+            <div className="mt-2">
+              {" "}
+              {/* Add mt-2 back here */}
               {user ? <LogoutButton /> : <LoginButton />}
             </div>
           </div>
