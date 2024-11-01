@@ -126,6 +126,7 @@ export const createPhotoBookPages = (
         fontFamily: "Arial",
         textAlign: "center",
         originX: "center",
+        selectable: false,
       });
       canvas.add(pageNumber);
     }
@@ -205,6 +206,7 @@ export const createPhotoPrintPages = (
             fontFamily: "Arial",
             textAlign: "center",
             originX: "center",
+            selectable: false,
           });
           canvas.add(pageNumber);
         }
@@ -273,6 +275,7 @@ export const createPhotoTilesPages = (
         textAlign: "center",
         originX: "center",
         originY: "center",
+        selectable: false,
       });
       canvas.add(tileNumber);
     }
