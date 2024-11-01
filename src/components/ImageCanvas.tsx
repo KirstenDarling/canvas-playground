@@ -67,7 +67,7 @@ const ImageCanvas: React.FC<ImageCanvasProps> = ({
         onFullscreenToggle={onFullscreenToggle}
         canvasRef={canvasRef}
       />
-      <div className="border border-gray-500 w-[1300px] h-[1000px] overflow-y-auto">
+      <div className="bg-gray-50 rounded-lg shadow-md p-4 border-gray-300 border-2 w-[1300px] h-[1000px] overflow-y-auto">
         <canvas ref={canvasRef} className="w-full" />
       </div>
     </div>
