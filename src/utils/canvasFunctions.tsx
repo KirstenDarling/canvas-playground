@@ -75,10 +75,16 @@ export const createPhotoBookPages = (
       top: spineTop,
       width: spineWidth,
       height: pageHeight,
-      stroke: "black",
-      strokeWidth: 2,
       fill: "white",
       selectable: false,
+      stroke: "lightgrey",
+      strokeWidth: 0.5,
+      shadow: new fabric.Shadow({
+        color: "rgba(0, 0, 0, 0.5)",
+        blur: 5,
+        offsetX: 0,
+        offsetY: 0,
+      }),
     });
     canvas.add(spine);
 
@@ -109,10 +115,16 @@ export const createPhotoBookPages = (
         top: pageTop,
         width: pageWidth,
         height: pageHeight,
-        stroke: "black",
-        strokeWidth: 2,
         fill: "white",
         selectable: false,
+        stroke: "lightgrey",
+        strokeWidth: 0.5,
+        shadow: new fabric.Shadow({
+          color: "rgba(0, 0, 0, 0.5)",
+          blur: 5,
+          offsetX: 0,
+          offsetY: 0,
+        }),
       });
       canvas.add(rect);
 
@@ -126,6 +138,7 @@ export const createPhotoBookPages = (
         fontFamily: "Arial",
         textAlign: "center",
         originX: "center",
+        selectable: false,
       });
       canvas.add(pageNumber);
     }
@@ -191,10 +204,16 @@ export const createPhotoPrintPages = (
             top: 50,
             width: pageWidth,
             height: pageHeight,
-            stroke: "black",
-            strokeWidth: 2,
             fill: "white",
             selectable: false,
+            stroke: "lightgrey",
+            strokeWidth: 0.5,
+            shadow: new fabric.Shadow({
+              color: "rgba(0, 0, 0, 0.5)",
+              blur: 5,
+              offsetX: 0,
+              offsetY: 0,
+            }),
           });
           canvas.add(rect);
 
@@ -205,6 +224,7 @@ export const createPhotoPrintPages = (
             fontFamily: "Arial",
             textAlign: "center",
             originX: "center",
+            selectable: false,
           });
           canvas.add(pageNumber);
         }
@@ -259,10 +279,16 @@ export const createPhotoTilesPages = (
         top: 50 + row * tileHeight,
         width: tileWidth,
         height: tileHeight,
-        stroke: "black",
-        strokeWidth: 2,
         fill: "white",
         selectable: false,
+        stroke: "lightgrey",
+        strokeWidth: 0.5,
+        shadow: new fabric.Shadow({
+          color: "rgba(0, 0, 0, 0.5)",
+          blur: 5,
+          offsetX: 0,
+          offsetY: 0,
+        }),
       });
       canvas.add(rect);
 
@@ -273,6 +299,7 @@ export const createPhotoTilesPages = (
         textAlign: "center",
         originX: "center",
         originY: "center",
+        selectable: false,
       });
       canvas.add(tileNumber);
     }
