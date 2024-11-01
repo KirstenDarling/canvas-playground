@@ -35,7 +35,7 @@ export default function ImageGallery(props: ImageGalleryProps) {
       {/* Upload Button */}
       <button
         onClick={() => setIsModalOpen(true)}
-        className="bg-purple-400 hover:bg-purple-600 text-white font-medium py-2 px-4 rounded-full shadow-sm transition-all duration-200"
+        className="bg-purple-500 hover:bg-purple-700 text-white font-medium py-1.5 px-3 rounded-md shadow-md transition-all duration-200"
       >
         Add Images
       </button>
