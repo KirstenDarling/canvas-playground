@@ -79,14 +79,14 @@ export const useImageHandling = (
       const imageUrl = e.dataTransfer!.getData("imageUrl");
 
       fabric.Image.fromURL(imageUrl, {}).then((img) => {
-        const page = canvasInstanceRef.current!.getObjects().find((obj) => {
+        const rect = canvasInstanceRef.current!.getObjects().find((obj) => {
           if (obj instanceof fabric.Rect) {
             const { left, top, width, height } = obj;
             return (
-              offsetX >= left &&
-              offsetX <= left + width &&
-              offsetY >= top &&
-              offsetY <= top + height
+              offsetX >= left! &&
+              offsetX <= left! + width! &&
+              offsetY >= top! &&
+              offsetY <= top! + height!
             );
           }
           return false;
@@ -97,32 +97,24 @@ export const useImageHandling = (
           scaleY: 0.5,
         });
 
-        if (page) {
+        if (rect) {
           const scale = Math.min(
-            page.width! / img.width!,
-            page.height! / img.height!
+            rect.width! / img.width!,
+            rect.height! / img.height!
           );
 
           img.set({
-            left: page.left! + (page.width! - img.width! * scale) / 2,
-            top: page.top! + (page.height! - img.height! * scale) / 2,
+            left: rect.left! + (rect.width! - img.width! * scale) / 2,
+            top: rect.top! + (rect.height! - img.height! * scale) / 2,
             scaleX: scale,
             scaleY: scale,
             selectable: true,
           });
-        } else {
-          img.set({
-            left: offsetX,
-            top: offsetY,
-            scaleX: 0.5,
-            scaleY: 0.5,
-            selectable: true,
-          });
-        }
 
-        canvasInstanceRef.current!.add(img);
-        canvasInstanceRef.current!.setActiveObject(img);
-        canvasInstanceRef.current!.renderAll();
+          canvasInstanceRef.current!.add(img);
+          canvasInstanceRef.current!.setActiveObject(img);
+          canvasInstanceRef.current!.renderAll();
+        }
       });
     },
     [canvasInstanceRef]
