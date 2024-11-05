@@ -147,93 +147,6 @@ export const createPhotoBookPages = (
   }
 };
 
-export const createPhotoPrintPages = (
-  canvasInstanceRef: React.MutableRefObject<fabric.Canvas | null>,
-  photoPrintOptions: PhotoPrintOptions
-) => {
-  if (canvasInstanceRef.current) {
-    const canvas = canvasInstanceRef.current;
-    canvas.clear();
-
-    const { size } = photoPrintOptions;
-
-    let pageWidth;
-    let pageHeight;
-
-    switch (size) {
-      case "4x6":
-        pageWidth = 400;
-        pageHeight = 600;
-        break;
-      case "8x11":
-        pageWidth = 800 / 2;
-        pageHeight = 1100 / 2;
-        break;
-      case "11x14":
-        pageWidth = 1100 / 2;
-        pageHeight = 1400 / 2;
-        break;
-      case "12x12":
-        pageWidth = 1200 / 2;
-        pageHeight = 1200 / 2;
-        break;
-      default:
-        pageWidth = 400;
-        pageHeight = 600;
-        break;
-    }
-
-    const spineWidth = 50;
-
-    const pagesPerSpread = 2;
-    const numPages = 1;
-
-    const canvasWidth = 1300;
-    const padding = (canvasWidth - pageWidth * pagesPerSpread - spineWidth) / 3;
-    const spreadWidth = pageWidth * pagesPerSpread + padding + spineWidth;
-    const numSpreads = Math.ceil(numPages / pagesPerSpread);
-
-    for (let i = 0; i < numSpreads; i++) {
-      const initialOffset = i * spreadWidth + padding + spineWidth + padding;
-
-      for (let j = 0; j < pagesPerSpread; j++) {
-        const pageIndex = i * pagesPerSpread + j;
-        if (pageIndex < numPages) {
-          const rect = new fabric.Rect({
-            left: initialOffset + j * pageWidth,
-            top: 50,
-            width: pageWidth,
-            height: pageHeight,
-            fill: "white",
-            selectable: false,
-            stroke: "lightgrey",
-            strokeWidth: 0.5,
-            shadow: new fabric.Shadow({
-              color: "rgba(0, 0, 0, 0.5)",
-              blur: 5,
-              offsetX: 0,
-              offsetY: 0,
-            }),
-          });
-          canvas.add(rect);
-
-          const pageNumber = new fabric.IText((pageIndex + 1).toString(), {
-            left: rect.left! + pageWidth / 2,
-            top: rect.top! + pageHeight + 10,
-            fontSize: 16,
-            fontFamily: "Arial",
-            textAlign: "center",
-            originX: "center",
-            selectable: false,
-          });
-          canvas.add(pageNumber);
-        }
-      }
-    }
-    canvas.renderAll();
-  }
-};
-
 export const createPhotoTilesPages = (
   canvasInstanceRef: React.MutableRefObject<fabric.Canvas | null>,
   photoTilesOptions: PhotoTilesOptions
@@ -264,7 +177,6 @@ export const createPhotoTilesPages = (
 
     const numTiles = photoTilesOptions.pages;
     const tilesPerRow = 3;
-    // const numRows = Math.ceil(numTiles / tilesPerRow);
 
     const rowWidth = tilesPerRow * tileWidth;
 
