@@ -27,3 +27,9 @@ Created the changelog, merged Development into Master, and created a fullscreen 
 - MERGED Development. [PR-20](https://github.com/KirstenDarling/canvas-playground/pull/20)
 - MINOR Added initial changelog. [PR-21](https://github.com/KirstenDarling/canvas-playground/pull/21)
 - OPEN Reopened Development for today's progress. [PR-22](https://github.com/KirstenDarling/canvas-playground/pull/22)
+
+## [1.0.0] - 2024-10-31
+
+Description.
+
+- MINOR Added fullscreen button. [PR-18](https://github.com/KirstenDarling/canvas-playground/pull/18)
