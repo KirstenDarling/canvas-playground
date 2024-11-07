@@ -164,7 +164,7 @@ const ImageControls: React.FC<ImageControlsProps> = ({
     };
   }, [selectedImage, deleteSelectedImage]);
 
-  const addWhiteBorder = () => {
+  const addGreyBorder = () => {
     if (selectedImage instanceof fabric.Image) {
       const dpi = 300;
       const inchesToPixels = dpi / 1;
@@ -344,12 +344,10 @@ const ImageControls: React.FC<ImageControlsProps> = ({
         </span>
       </button>
       <button
-        onClick={addWhiteBorder}
+        onClick={addGreyBorder}
         disabled={!selectedImage || hasImage}
         className={`relative p-2 group
-           ${
-             !selectedImage || hasImage ? "opacity-50 cursor-not-allowed" : ""
-           }`}
+          ${!selectedImage || hasImage ? "opacity-50 cursor-not-allowed" : ""}`}
       >
         <BsImage size={20} />
         <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
