@@ -166,25 +166,18 @@ const ImageControls: React.FC<ImageControlsProps> = ({
 
   const addWhiteBorder = () => {
     if (selectedImage instanceof fabric.Image) {
-      const dpi = 300; // Replace with your actual DPI if different
-      const inchesToPixels = dpi / 1; // Conversion factor
-      const borderWidth = 0.25 * inchesToPixels; // 1/4 inch in pixels
+      const dpi = 300;
+      const inchesToPixels = dpi / 1;
+      const borderWidth = 0.25 * inchesToPixels;
 
-      // Calculate the dimensions of the inner image
       const innerWidth = selectedImage.width! - 2 * borderWidth;
       const innerHeight = selectedImage.height! - 2 * borderWidth;
 
-      // Create a group to hold the original image and the border
       const imageGroup = new fabric.Group(
-        [
-          // Clone the original image and resize it to be the inner image
-          selectedImage.clone() as unknown as fabric.Image,
-        ],
+        [selectedImage.clone() as unknown as fabric.Image],
         {
-          // Set the width and height of the group to match the original image
           width: selectedImage.width,
           height: selectedImage.height,
-          // Clip the group to create the inner border effect
           clipPath: new fabric.Rect({
             width: innerWidth,
             height: innerHeight,
@@ -194,15 +187,12 @@ const ImageControls: React.FC<ImageControlsProps> = ({
         }
       );
 
-      // Apply the border color to the group
       imageGroup.set({
         borderColor: "rgba(128, 128, 128, 0.7)", // Adjust color and transparency as needed
       });
 
-      // Remove the original image from the canvas
       canvasInstanceRef.current!.remove(selectedImage);
 
-      // Add the group (with the inner image and border) to the canvas
       canvasInstanceRef.current!.add(imageGroup);
 
       canvasInstanceRef.current!.requestRenderAll();
