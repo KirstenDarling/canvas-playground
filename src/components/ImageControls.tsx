@@ -166,33 +166,44 @@ const ImageControls: React.FC<ImageControlsProps> = ({
 
   const addWhiteBorder = () => {
     if (selectedImage instanceof fabric.Image) {
-      const borderWidth = 5; // Adjust the border width as needed
+      const dpi = 300; // Replace with your actual DPI if different
+      const inchesToPixels = dpi / 1; // Conversion factor
+      const borderWidth = 0.25 * inchesToPixels; // 1/4 inch in pixels
 
-      // Create a copy of the original image
-      const innerImage = selectedImage.clone() as fabric.Image; // Or use the alternative with fabric.Object.prototype.clone()
+      // Calculate the dimensions of the inner image
+      const innerWidth = selectedImage.width! - 2 * borderWidth;
+      const innerHeight = selectedImage.height! - 2 * borderWidth;
 
-      // Resize the inner image to create space for the border
-      innerImage.scaleToWidth(selectedImage.width! - 2 * borderWidth);
-      innerImage.scaleToHeight(selectedImage.height! - 2 * borderWidth);
+      // Create a group to hold the original image and the border
+      const imageGroup = new fabric.Group(
+        [
+          // Clone the original image and resize it to be the inner image
+          selectedImage.clone() as unknown as fabric.Image,
+        ],
+        {
+          // Set the width and height of the group to match the original image
+          width: selectedImage.width,
+          height: selectedImage.height,
+          // Clip the group to create the inner border effect
+          clipPath: new fabric.Rect({
+            width: innerWidth,
+            height: innerHeight,
+            top: borderWidth,
+            left: borderWidth,
+          }),
+        }
+      );
 
-      // Center the inner image within the original image's boundaries
-      innerImage.set({
-        left: borderWidth,
-        top: borderWidth,
-      });
-
-      // Apply the border to the original image
-      selectedImage.set({
+      // Apply the border color to the group
+      imageGroup.set({
         borderColor: "rgba(128, 128, 128, 0.7)", // Adjust color and transparency as needed
-        cornerColor: "rgba(128, 128, 128, 0.7)", // Adjust color and transparency as needed
-        cornerStrokeColor: "rgba(128, 128, 128, 0.7)", // Adjust color and transparency as needed
       });
 
-      // Add the inner image to the canvas
-      canvasInstanceRef.current!.add(innerImage);
+      // Remove the original image from the canvas
+      canvasInstanceRef.current!.remove(selectedImage);
 
-      // Ensure the inner image is behind the original image
-      selectedImage.bringToFront();
+      // Add the group (with the inner image and border) to the canvas
+      canvasInstanceRef.current!.add(imageGroup);
 
       canvasInstanceRef.current!.requestRenderAll();
     }
