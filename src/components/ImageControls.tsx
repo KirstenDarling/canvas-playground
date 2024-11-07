@@ -164,6 +164,41 @@ const ImageControls: React.FC<ImageControlsProps> = ({
     };
   }, [selectedImage, deleteSelectedImage]);
 
+  const addGreyBorder = () => {
+    if (selectedImage instanceof fabric.Image) {
+      const dpi = 300;
+      const inchesToPixels = dpi / 1;
+      const borderWidth = 0.25 * inchesToPixels;
+
+      const innerWidth = selectedImage.width! - 2 * borderWidth;
+      const innerHeight = selectedImage.height! - 2 * borderWidth;
+
+      const imageGroup = new fabric.Group(
+        [selectedImage.clone() as unknown as fabric.Image],
+        {
+          width: selectedImage.width,
+          height: selectedImage.height,
+          clipPath: new fabric.Rect({
+            width: innerWidth,
+            height: innerHeight,
+            top: borderWidth,
+            left: borderWidth,
+          }),
+        }
+      );
+
+      imageGroup.set({
+        borderColor: "rgba(128, 128, 128, 0.7)", // Adjust color and transparency as needed
+      });
+
+      canvasInstanceRef.current!.remove(selectedImage);
+
+      canvasInstanceRef.current!.add(imageGroup);
+
+      canvasInstanceRef.current!.requestRenderAll();
+    }
+  };
+
   console.log(hasPhotoBook);
 
   return (
@@ -306,6 +341,17 @@ const ImageControls: React.FC<ImageControlsProps> = ({
         <BiText size={20} />
         <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
           Add Text
+        </span>
+      </button>
+      <button
+        onClick={addGreyBorder}
+        disabled={!selectedImage || hasImage}
+        className={`relative p-2 group
+          ${!selectedImage || hasImage ? "opacity-50 cursor-not-allowed" : ""}`}
+      >
+        <BsImage size={20} />
+        <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
+          Add White Border
         </span>
       </button>
     </div>
