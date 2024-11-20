@@ -164,6 +164,40 @@ const ImageControls: React.FC<ImageControlsProps> = ({
     };
   }, [selectedImage, deleteSelectedImage]);
 
+  const addWhiteBorder = () => {
+    if (selectedImage instanceof fabric.Image) {
+      const borderWidth = 5; // Adjust the border width as needed
+
+      // Create a copy of the original image
+      const innerImage = selectedImage.clone() as fabric.Image; // Or use the alternative with fabric.Object.prototype.clone()
+
+      // Resize the inner image to create space for the border
+      innerImage.scaleToWidth(selectedImage.width! - 2 * borderWidth);
+      innerImage.scaleToHeight(selectedImage.height! - 2 * borderWidth);
+
+      // Center the inner image within the original image's boundaries
+      innerImage.set({
+        left: borderWidth,
+        top: borderWidth,
+      });
+
+      // Apply the border to the original image
+      selectedImage.set({
+        borderColor: "rgba(128, 128, 128, 0.7)", // Adjust color and transparency as needed
+        cornerColor: "rgba(128, 128, 128, 0.7)", // Adjust color and transparency as needed
+        cornerStrokeColor: "rgba(128, 128, 128, 0.7)", // Adjust color and transparency as needed
+      });
+
+      // Add the inner image to the canvas
+      canvasInstanceRef.current!.add(innerImage);
+
+      // Ensure the inner image is behind the original image
+      selectedImage.bringToFront();
+
+      canvasInstanceRef.current!.requestRenderAll();
+    }
+  };
+
   console.log(hasPhotoBook);
 
   return (
@@ -306,6 +340,19 @@ const ImageControls: React.FC<ImageControlsProps> = ({
         <BiText size={20} />
         <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
           Add Text
+        </span>
+      </button>
+      <button
+        onClick={addWhiteBorder}
+        disabled={!selectedImage || hasImage}
+        className={`relative p-2 group
+           ${
+             !selectedImage || hasImage ? "opacity-50 cursor-not-allowed" : ""
+           }`}
+      >
+        <BsImage size={20} />
+        <span className="absolute top-0 left-1/2 transform -translate-x-1/2 -mt-8 bg-gray-800 text-white text-sm px-2 py-1 rounded opacity-0 transition-opacity group-hover:opacity-100 whitespace-nowrap">
+          Add White Border
         </span>
       </button>
     </div>
